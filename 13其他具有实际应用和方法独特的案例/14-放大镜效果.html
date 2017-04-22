@@ -1,0 +1,61 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<title>Document</title>
+<style>
+* {margin:0; padding:0; }
+#move {width:50px; height:50px; background:yellow; position:absolute; opacity:0.6; filter:alpha(opacity=60); z-index:1; }
+#sma_box {width:200px; height:200px; position:absolute; top:0; left:0; z-index:0;}
+#sma_box img {width:200px; height:200px; vertical-align:top; border:none;}
+#big_box {width:400px; height:400px; position:absolute; top:0px; left:250px; border:2px solid purple; overflow:hidden;}
+#big_box img {width:1600px; height:1600px; vertical-align:top; border:none; position:absolute; }
+</style>
+<script src="jquery-1.10.1.min.js"></script>
+<script>
+
+ // 遮罩/小框 = 大框/大图
+
+ // x/200 = 400/1600 x=50
+ 
+$(function() {
+	$("#move").mousedown(function(ev) {
+		var disX=ev.pageX-$(this).offset().left;
+		var disY=ev.pageY-$(this).offset().top;
+		$(this).setCapture && $(this).setCapture();
+		$(document).mousemove(function(ev) {
+			var L=ev.pageX-disX;
+			var T=ev.pageY-disY;
+			if (L<0) {
+				L=0;
+			} else if (L>$("#sma_box").width()-$("#move").width()) {
+				L=$("#sma_box").width()-$("#move").width();
+			};
+			if (T<0) {
+				T=0;
+			} else if (T>$("#sma_box").height()-$("#move").height()) {
+				T=$("#sma_box").height()-$("#move").height();
+			};
+			$("#move").css("left",L);
+			$("#move").css("top",T);
+
+			var scale=$("#big_box").width() / $("#move").width();
+			$("#big_box img").css("left",-L*scale)
+			$("#big_box img").css("top",-T*scale)
+
+		})
+		$(document).mouseup(function() {
+			$(this).off();
+			$("#move").releaseCapture && $("#move").releaseCapture();
+		})
+		return false;
+	})
+})
+</script>
+</head>
+<body>
+	<div id="move"></div>
+	<div id="sma_box"><img src="14.jpg" /></div>
+	<div id="big_box"><img src="14.jpg" /></div>
+</body>
+</html>

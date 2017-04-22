@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>点击往下掉，再点击飘回来</title>
+<script src="miaov.js"></script>
+<script>
+window.onload = function () {
+	var str = '';
+	var len = 20;
+	var aDiv = document.getElementsByTagName('div');
+	var timer = null;
+	var num = 0;
+	var flag = true; //flag代表方向
+	var finished = true;
+	
+	for ( var i=0; i<len; i++ ) {
+		str += '<div style="width:50px; height:50px; background:red; position:absolute; top:0px; left:'+ i*60 +'px;"></div>';
+	}
+	
+	document.body.innerHTML = str;
+	
+	// document.onclick = function () {
+	// 	clearInterval( timer );
+	// 	timer = setInterval( function (){
+	// 		doMove( aDiv[num], 'top', 23, 500 );
+	// 		num ++;
+	// 		if ( num === len ) {
+	// 			clearInterval( timer );
+	// 		}
+	// 	}, 100 );
+	// };
+
+	document.onclick = function () {
+		
+		if ( !finished ) { return; } //如果一点击，前一轮没有完成就直接退出
+
+		finished = false; //finished用于检测一轮是否完成，新一轮开始所以finished为false
+
+		clearInterval( timer );
+		timer = setInterval( function (){
+
+			doMove( aDiv[num], 'top', 23, flag?500:0, num == len - 1 ? function(){
+					finished = true; //当且仅当最后一个aDiv落定的时候，finished才算完成，改为true
+					flag = !flag;
+					// alert("完成了一轮！");
+				} : null);
+			num ++;
+
+			if ( num === len ) {
+				clearInterval( timer );
+				num = 0;
+			}
+			
+		}, 100 );
+		
+	};
+};
+</script>
+
+</head>
+
+<body>
+</body>
+</html>

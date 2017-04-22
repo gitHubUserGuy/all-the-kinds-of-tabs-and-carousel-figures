@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>无标题文档</title>
+<style>
+ul, li, p {margin:0; padding:0; list-style:none;}
+#list {width:100px; float:left }
+#list span {display:block; height:200px; border:1px solid purple; line-height:200px; text-align:center; background-color:#66FF00; color:white; cursor:pointer}
+div {float:left; position:relative; width:400px; height:402px; border:1px solid purple; }
+img {width:400px; height:402px; position:absolute; display:none;}
+#div1 ul {position:absolute; width:400px; bottom:0; display:none;}
+#div1 li {height:50px; border:1px solid purple; line-height:50px; text-align:center; background-color:#66FF00; color:white; cursor:pointer; display:table-cell;}
+.active { font-weight:bold; filter:alpha(opacity=50); opacity:0.5;}
+</style>
+<script>
+window.onload=function() {
+	var oP= document.getElementById("list");
+	var aSpan= oP.getElementsByTagName("span");
+	var aImg= document.getElementsByTagName("img");
+	var aUl= document.getElementsByTagName("ul");
+	var arrImg= [
+		["img/1.jpg", "img/2.jpg", "img/3.jpg","img/4.jpg","img/miaov.jpg"],
+		["img/1.png", "img/2.png", "img/3.png","img/4.png"]
+	]
+	var num=0;
+	var b=0;
+	var aLi="";
+	autoplay();
+
+	function clearAll(Span, Img, Ul ) {
+		for (var i=0; i<aSpan.length; i++) {
+			Span[i].className="";
+			Img[i].style.display="none";
+			Ul[i].style.display="none";
+				aLi= Ul[i].getElementsByTagName("li");
+				for (var j=0; j<aLi.length; j++) {
+					aLi[j].className="";
+				}//这个地方也用得好！
+		}
+	}
+	function autoplay() {
+		timer=setInterval(function() {
+			clearAll(aSpan, aImg, aUl);
+			aSpan[b].className="active";
+			aImg[b].style.display="block";
+			aImg[b].src=arrImg[b][num];
+			aUl[b].style.display="table";
+			aUl[b].getElementsByTagName("li")[num].className="active";
+			num++;
+			if (num===arrImg[b].length) {
+				num=0; 
+				b=b==0? 1:0;
+			}
+		//大小选项卡轮换的时候的关键设置！将大选项卡用三目放小选项卡条件内部。
+		//话说，如果大选项卡如果有三个或者多个，b如果处理？
+		}, 1000);
+	}
+	
+}
+</script>
+</head>
+
+<body>
+<p id="list">
+	<span class="active">大选项卡1</span>
+	<span>大选项卡2</span>
+</p>
+<div id="div1">
+	<img src="img/1.jpg" style="display:block" />
+	<ul id="list1" style="display:table" >
+		<li class="active">选项卡1</li>
+		<li>选项卡2</li>
+		<li>选项卡3</li>
+		<li>选项卡4</li>
+		<li>选项卡5</li>
+	</ul>
+	<img src="img/4.jpg" />
+	<ul id="list2">
+		<li class="active">选项卡1</li>
+		<li>选项卡2</li>
+		<li>选项卡3</li>
+		<li>选项卡4</li>
+	</ul>
+</div>
+</body>
+</html>

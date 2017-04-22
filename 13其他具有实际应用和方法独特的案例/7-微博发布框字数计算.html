@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+<style>
+* {margin:0; padding:0; }
+#wrap {margin:50px; width:300px; height:150px; }
+#p1 {float:right; }
+#words {width:100%; height:100%;}
+#input1 {float:right; margin:10px; width:50px; height:20px; line-height:20px; text-align:center; text-decoration:none; background:green; color:white;}
+#input1.active {background:red;}
+</style>
+<script>
+window.onload=function() {
+	var oDiv=document.getElementById("wrap");
+	var oP=oDiv.getElementsByTagName("p")[0];
+	var oText=oDiv.getElementsByTagName("textarea")[0];
+	var oInp=oDiv.getElementsByTagName("a")[0];
+ 	var b=true;
+ 	var num=0;
+ 	var timer=null;
+
+	// oText.onfocus=function() {
+	// 	oP.innerHTML="你还可以输入<span>140</span>个字";
+	// }
+	// oText.onblur=function() {
+	// 	if (oText.value==="") {
+	// 		oP.innerHTML="你到底发不发微博，要发就点下面塞！";
+	// 	} else {
+	// 		oP.innerHTML="你还可以输入<span>140</span>个字";
+	// 	}
+	// }
+
+	// 上面这个不行，下面这个行！很好！
+	oText.onfocus=function() {
+		if (b) {
+			oP.innerHTML="你还可以输入<span>140</span>个字";
+			b=false;
+		}
+	}
+	oText.onblur=function() {
+		if (oText.value==="") {
+			oP.innerHTML="你到底发不发微博，要发就点下面塞！";
+			b=true;
+		}
+	}
+
+	window.onbeforeunload=function() { oText.value=""; }//页面刷新时
+
+	if (oText.onpropertychange) {
+		oText.onpropertychange=spanChange;
+	} else {
+		oText.oninput=spanChange;
+	}
+
+	//用charCodeAt不行，最好用正则
+	function getWordsLength() {
+		var str=oText.value;
+		return String(str).replace(/[^\x00-xff]/g,"aa").length;
+	}
+
+	function spanChange() {
+		var oSpan=document.getElementsByTagName("span")[0];
+		len=Math.ceil(getWordsLength()/2);
+		if (len<=140) {
+			oSpan.innerHTML=140-len;
+			oSpan.style.color="black";
+			oInp.className="";
+		} else {
+			oSpan.innerHTML=len-140;
+			oSpan.style.color="red";
+			oInp.className="active";
+		}
+		if (oText.value==="") { 
+			oInp.className="active"; 
+		}
+	}
+
+	oInp.onclick=function() {
+		if (this.className==="") {
+			alert("提交成功！");
+		} else {
+			clearInterval(timer);
+			timer=setInterval(function() {
+				num++;
+				if (num===8) {
+					clearInterval(timer);
+					num=0;//如果不重置为0就会由于不满足为8的条件，在第二次点击的时候背景一直闪烁
+				}
+				if (num%2) {
+					oText.style.background="red";
+				} else {
+					oText.style.background="";
+				}
+			},50)
+		}
+	}
+
+
+}
+</script>
+</head>
+<body>
+<div id="wrap">
+	<p id="p1">你到底发不发微博，要发就点下面塞！</p>
+	<textarea id="words"></textarea><br>
+	<a href="javascript:;" class="active" id="input1">发布</a>
+</div>
+</body>
+</html>

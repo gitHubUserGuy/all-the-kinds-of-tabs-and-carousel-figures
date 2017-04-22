@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+<style>
+* {margin:0; padding:0;}
+li {list-style: none;}
+#box {width:600px; height: 300px; position: relative; border:1px solid purple; }
+#ul1 li {position: absolute; }
+#ul1 li:nth-child(1) {width:200px; height:100px; left:0px; top:100px; z-index: 1}
+#ul1 li:nth-child(2) {width:200px; height:100px; left:0px; top:100px; z-index: 2}
+#ul1 li:nth-child(3) {width:200px; height:100px; left:0px; top:100px; z-index: 3}
+#ul1 li:nth-child(4) {width:400px; height:200px; left:100px; top:50px; z-index:4}
+#ul1 li:nth-child(5) {width:200px; height:100px; left:400px; top:100px; z-index: 3}
+#ul1 li:nth-child(6) {width:200px; height:100px; left:400px; top:100px; z-index: 2}
+#ul1 li:nth-child(7) {width:200px; height:100px; left:400px; top:100px; z-index: 1}
+#box #prev {width:50px; height:50px;line-height: 50px;  position: absolute; font-size:32px; font-weight: bold; left:250px; top:250px; cursor: pointer;}
+#box #next {width:50px; height:50px;line-height: 50px;  position: absolute; font-size:32px; font-weight: bold; left:300px; top:250px; cursor: pointer; }
+</style>
+<script src="jquery-1.10.1.min.js"></script>
+<script>
+$(function() {
+	var arr=[];
+
+	$("#ul1 li").each(function(i, val) {
+		arr.push([
+			parseInt($(val).position().left),
+			parseInt($(val).position().top),
+			parseInt($(val).width()),
+			parseInt($(val).height()),
+			parseInt($(val).css("z-index")),
+			parseInt($("#ul1 img").eq(i).width()),
+			parseInt($("#ul1 img").eq(i).height())
+		]);
+	})
+	console.dir(arr);
+	$("#prev").on("click",function() {
+		arr.unshift(arr[arr.length-1]);
+		arr.pop();
+		$("#ul1 li").each(function(i, val) {
+			$(val).css("z-index", arr[i][4]);
+			$(val).animate({
+				left:arr[i][0],
+				top:arr[i][1],
+				width:arr[i][2],
+				height:arr[i][3]
+			}, 500, "swing");
+			$("#ul1 img").eq(i).animate({
+				width:arr[i][5],
+				height:arr[i][6]
+			}, 500, "swing");
+		})
+	})
+	$("#next").on("click",function() {
+		arr.push(arr[0]);
+		arr.shift();
+		$("#ul1 li").each(function(i, val) {
+			$(val).css("z-index", arr[i][4]);
+			$(val).animate({
+				left:arr[i][0],
+				top:arr[i][1],
+				width:arr[i][2],
+				height:arr[i][3]
+			}, 500, "swing");
+			$("#ul1 img").eq(i).animate({
+				width:arr[i][5],
+				height:arr[i][6]
+			}, 500, "swing");
+		})
+	})
+	
+})
+</script>
+</head>
+<body>
+<div id="box">
+	<button type="button" id="prev"><</button>
+	<ul id="ul1">
+		<li><img width="200" height="100" src="2-2-1.jpg" alt=""></li>
+		<li><img width="200" height="100" src="2-2-2.jpg" alt=""></li>
+		<li><img width="200" height="100" src="2-2-3.jpg" alt=""></li>
+		<li><img width="400" height="200" src="2-2-4.jpg" alt=""></li>
+		<li><img width="200" height="100" src="2-2-5.jpg" alt=""></li>
+		<li><img width="200" height="100" src="2-2-6.jpg" alt=""></li>
+		<li><img width="200" height="100" src="2-2-7.jpg" alt=""></li>
+	</ul>
+	<button type="button" id="next">></button>
+</div>
+</body>
+</html>

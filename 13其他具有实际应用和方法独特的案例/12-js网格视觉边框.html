@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<title>Document</title>
+<style>
+* {margin:0; padding:0;}
+#box1 {position:relative; width:1010px; height:1010px; background:black;}
+#box1 .div1 {width:100px; height:100px; color:red; background:white; line-height:100px; text-align:center; font-size:36px; ; position:absolute; top:0; left:0;}
+#move {width:100px; height:100px; background:purple; position:absolute; top:0; left:0; opacity:0.8; filter:alpha(opacity=80); color:white; font-size:48px; text-align:center; line-height:100px; cursor:pointer;}
+</style>
+<script src="jquery-1.10.1.min.js"></script>
+<script>
+$(function() {
+	var len=100;
+	var str="";
+	var arr=["蔬菜","水果","粮食"]
+	var L=0;
+	var T=0;
+
+ 	for (var i=0; i<len; i++) {
+ 		str+="<div class='div1' style='top:"+Math.floor(i/10)*101+"px; left:"+i%10*101+"px; '>"+ arr[i%arr.length] +"</div>";
+	}
+	$("#box1").html(str);
+
+	// for (var i=0; i<$(".div1").size(); i++) {
+	// 	$(".div1").get(i).innerHTML="left:"+$(".div1").get(i).offsetLeft+"<br />"+"top:"+$(".div1").get(i).offsetTop;
+	// }
+	
+	$("#move").mousedown(function(ev) {
+
+		var disX=ev.pageX-$("#move").offset().left;
+		var disY=ev.pageY-$("#move").offset().top;
+		$(this).setCapture && $(this).setCapture();
+
+		$(document).mousemove(function(ev) {
+			L=ev.pageX-disX;
+			T=ev.pageY-disY;
+			if (L<0) {
+				L=0;
+			} else if (L>$("#box1").width()-$("#move").width()-1) {
+				L=$("#box1").width()-$("#move").width()-1;
+			}
+			if (T<0) {
+				T=0;
+			} else if (T>$("#box1").width()-$("#move").width()-1) {
+				T=$("#box1").width()-$("#move").width()-1;
+			}
+			$("#move").css("left",L);
+			$("#move").css("top",T);
+		})
+		$(document).mouseup(function() {
+			var LL=0;
+			var TT=0;
+
+			if (L/100-parseInt(L/100)>=0.5) {
+				LL=101*Math.ceil(L/101);
+			} else if (L/100-parseInt(L/100)<0.5) {
+				LL=101*Math.floor(L/101);	
+			}
+			if (T/100-parseInt(T/100)>=0.5) {
+				TT=101*Math.ceil(T/101);
+			} else if (T/100-parseInt(T/100)<0.5) {
+				TT=101*Math.floor(T/101);
+			}
+
+			$("#move").css("left",LL);
+			$("#move").css("top",TT);
+
+			$(this).off();
+			$("#move").releaseCapture && $("#move").releaseCapture();
+		});
+		return false;
+	})
+})
+</script>
+</head>
+<body>
+<p id="box1">
+	<div id="move">田鼠</div>
+</p>
+</body>
+</html>

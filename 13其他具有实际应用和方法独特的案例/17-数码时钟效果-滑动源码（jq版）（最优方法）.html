@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+<style>
+* {margin:0; padding:0; }
+li {list-style:none; display:inline-block; width:50px; height:70px; position:relative; overflow:hidden;}
+img {border:none; width:50px; height:70px; }
+ul {margin:10px; width:400px; font-size:0; }
+li div {position:absolute; top:0; left:0; }
+</style>
+<script src="jquery-1.10.1.min.js"></script>
+<script>
+$.extend({
+	getStyle:function(obj, attr) {
+		return obj.currentStyle? obj.currentStyle[attr]:getComputedStyle(obj)[attr];
+	},
+	shake:function(obj, attr, endFn) {
+		if (obj.onOff) return;
+		obj.onOff=true;
+
+		var pos=parseInt( getStyle(obj, attr) );
+		var arr=[];
+		var num=0; 
+		var timer=null;
+
+		for ( var i=20; i>=0; i-=2) {
+			arr.push(i, -i)
+		}
+
+		clearInterval(obj.shake);
+		obj.shake=setInterval(function() {
+			obj.style[attr]=pos+arr[num]+"px";
+			num++;
+			if ( num===arr.length ) {
+				clearInterval(obj.shake);
+				endFn && endFn();
+				obj.onOff=false;
+			}
+		},50)
+	}
+})
+</script>
+<script>
+$(function() {
+	function toTwo(n) {
+		return n<10? "0"+n:""+n;
+	}
+
+	function fnTime() {
+		var myTime=new Date(),
+			str=toTwo(myTime.getHours())+":"+toTwo(myTime.getMinutes())+":"+toTwo(myTime.getSeconds());
+
+		fnFlip();
+		function fnFlip() {
+			$("li").each(function(i, val) {
+				if (str.charAt(i)==":") {
+					$(val).find("img").eq(0).attr("src","17-colon.jpg");
+					setTimeout(function() {
+						$(val).find("img").eq(0).attr("src","17-colon2.jpg");
+					}, 500);
+				} else {
+					$(val).find("img").eq(1).attr("src","17-"+str.charAt(i)+".jpg");
+					if ( $(val).find("img").eq(0).attr("src")!=$(val).find("img").eq(1).attr("src") ) {
+						$(val).find("div").eq(0).animate({top:-70},500,function() {
+	   						$(val).find("img")[0].setAttribute("src",$(val).find("img").eq(1).attr("src"));
+							$(val).find("div").eq(0).css("top","0");
+						})
+					}
+				}
+			})
+		}
+	}
+
+	setInterval(fnTime, 1000);
+})
+</script>
+</head>
+<body>
+<ul>
+	<li>
+		<div style="top: 0px;">
+			<img src="17-0.jpg" alt="">
+			<img src="17-0.jpg" alt="">
+		</div>
+	</li>
+	<li>
+		<div style="top: 0px;">
+			<img src="17-0.jpg" alt="">
+			<img src="17-0.jpg" alt="">
+		</div>
+	</li>
+	<li>
+		<div>
+			<img src="17-colon.JPG" alt="">
+		</div>
+	</li>
+	<li>
+		<div style="top: 0px;">
+			<img src="17-0.jpg" alt="">
+			<img src="17-0.jpg" alt="">
+		</div>
+	</li>
+	<li>
+		<div style="top: 0px;">
+			<img src="17-0.jpg" alt="">
+			<img src="17-0.jpg" alt="">
+		</div>
+	</li>
+	<li>
+		<div>
+			<img src="17-colon.JPG" alt="">
+		</div>
+	</li>
+	<li>
+		<div style="top: 0px;">
+			<img src="17-0.jpg" alt="">
+			<img src="17-0.jpg" alt="">
+		</div>
+	</li>
+	<li>
+		<div style="top: 0px;">
+			<img src="17-0.jpg" alt="">
+			<img src="17-0.jpg" alt="">
+		</div>
+	</li>
+</ul>	
+</body>
+</html>

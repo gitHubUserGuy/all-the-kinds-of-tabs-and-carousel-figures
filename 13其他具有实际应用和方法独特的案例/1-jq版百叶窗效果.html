@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+<style>
+* {margin:0; padding:0;}
+li {list-style: none;}
+#ul1 {width:300px; height:auto; border-top:1px solid purple;}
+#ul1 li {width:100%; height:20px; border-bottom:1px dashed purple; overflow: hidden; margin:10px; position: relative;}
+#ul1 li div {width:100%; height:40px; line-height: 20px; position: absolute; top:-20px;}
+</style>
+<script type="text/javascript" src="jquery-1.10.1.min.js"></script>
+<script>
+$(function() {
+	var iTimer=null;
+	var iNow=0;
+	var b=true;
+
+	setInterval(function() {
+		toShow();
+	}, 1000);
+
+	function toShow() {
+		clearInterval(iTimer);
+		iTimer=setInterval(function() {
+			if (iNow===$("#ul1 div").size()) {
+				clearInterval(iTimer);
+				iNow=0;
+				b=!b;
+			} else {
+				$("#ul1 div").eq(iNow).animate({top:b?0:-20}, 100, "swing");
+				iNow++;
+			}
+		}, 100)
+	}
+})
+</script>
+</head>
+<body>
+<ul id="ul1">
+	<li>
+		<div>
+			<p>难道非要爱到密不可分</p>
+			<p>关不住心门那啥</p>
+		</div>
+	</li>
+	<li>
+		<div>
+			<p>有多么的难受有多么的残忍</p>
+			<p>为什么总让我一个人痴痴等</p>
+		</div>
+	</li>
+	<li>
+		<div>
+			<p>你偷走的青春</p>
+			<p>是真的伤人我真的痛了</p>
+		</div>
+	</li>
+	<li>
+		<div>
+			<p>别说我的眼泪你无所谓</p>
+			<p>我才能明白爱是如此的动人</p>
+		</div>
+	</li>
+	<li>
+		<div>
+			<p>对爱我还是一样的坚贞</p>
+			<p>你说过我那啥倾国倾城</p>
+		</div>
+	</li>
+</ul>
+</body>
+</html>

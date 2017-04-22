@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>无标题文档</title>
+<style>
+ul, li, p {margin:0; padding:0; list-style:none;}
+#list {width:100px; float:left }
+#list span {display:block; height:200px; border:1px solid purple; line-height:200px; text-align:center; background-color:#66FF00; color:white; cursor:pointer}
+div {float:left; position:relative; width:400px; height:402px; border:1px solid purple; }
+img {width:400px; height:402px; position:absolute; display:none;}
+#div1 ul {position:absolute; width:400px; bottom:0; display:none;}
+#div1 li {height:50px; border:1px solid purple; line-height:50px; text-align:center; background-color:#66FF00; color:white; cursor:pointer; display:table-cell;}
+.active { font-weight:bold; filter:alpha(opacity=50); opacity:0.5;}
+</style>
+<script>
+window.onload=function() {
+	var oP= document.getElementById("list");
+	var aSpan= oP.getElementsByTagName("span");
+	
+	var aImg= document.getElementsByTagName("img");
+	var aUl= document.getElementsByTagName("ul")
+	var arrImg= [
+		["img/1.png", "img/2.png", "img/3.png"],
+		["img/4.png", "img/active.png"]
+	]
+	var num=0;
+
+	fnLi(aUl[num])
+
+	for (var i=0; i<aSpan.length; i++) {
+		aSpan[i].index= i; 
+		aSpan[i].onclick= function() {
+			num=this.index;
+			for (var i=0; i<aSpan.length; i++) {
+				aSpan[i].className="";
+				aUl[i].style.display="none";
+				aImg[i].style.display="none";//小心忘掉这儿
+			}
+			this.className="active";
+			aUl[num].style.display="table";
+			aImg[num].style.display="block";
+			fnLi(aUl[num]);
+		}
+	}
+	
+	function fnLi( whichaUl ) {
+		listLi= whichaUl.getElementsByTagName("li");
+		for (var i=0; i<listLi.length; i++) {
+			listLi[i].index= i;
+			listLi[i].onclick=function() {
+				for (var i=0; i<listLi.length; i++) {
+					listLi[i].className="";
+				}
+				this.className="active";
+				aImg[num].src= arrImg[num][this.index];
+			}
+		}
+	}
+}
+</script>
+</head>
+
+<body>
+<p id="list">
+	<span class="active">大选项卡1</span>
+	<span>大选项卡2</span>
+</p>
+<div id="div1">
+	<img src="img/1.png" style="display:block" />
+	<ul id="list1" style="display:table" >
+		<li class="active">选项卡1</li>
+		<li>选项卡2</li>
+		<li>选项卡3</li>
+	</ul>
+	<img src="img/4.png" />
+	<ul id="list2">
+		<li class="active">选项卡1</li>
+		<li>选项卡2</li>
+	</ul>
+</div>
+</body>
+</html>

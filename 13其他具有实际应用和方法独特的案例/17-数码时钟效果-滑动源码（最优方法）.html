@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>图片时间（动画扩展版）</title>
+<style>
+
+		html, body, ul {
+			margin: 0;
+			padding: 0;
+		}
+		li {
+			list-style: none;
+			display: inline-block;
+			width: 50px;
+			height: 70px; 
+			position: relative;
+			overflow: hidden;
+		}
+		img {
+			border: 0;
+			width: 50px;
+			height: 70px;
+		}
+		ul {
+			margin: 50px auto;
+			width: 400px;
+			font-size: 0;
+		}
+		li div {
+			position: absolute;
+			top: 0;
+			left: 0;
+		}
+	
+</style>
+<script>
+
+function doMove ( obj, attr, dir, target, endFn ) {
+	
+	dir = parseInt(getStyle( obj, attr )) < target ? dir : -dir;
+	
+	clearInterval( obj.timer );
+	
+	obj.timer = setInterval(function () {
+		
+		var speed = parseInt(getStyle( obj, attr )) + dir;
+		
+		if ( speed > target && dir > 0 ||  speed < target && dir < 0  ) {
+			speed = target;
+		}
+		
+		obj.style[attr] = speed + 'px';
+		
+		if ( speed == target ) {
+			clearInterval( obj.timer );
+			endFn && endFn();
+		}
+		
+	}, 30);
+}
+
+function opacity(obj, num, target, endFn) {
+	
+		num = getStyle(obj, 'opacity')*100 < target ? num : -num;
+		
+		clearInterval( obj.opacity );
+		
+		obj.opacity = setInterval(function () {
+			
+			var speed = parseInt(getStyle(obj, 'opacity')*100) + num;
+			
+			if ( speed > target && num > 0 || speed < target && num < 0 ) {
+				speed = target;
+			}
+			
+			obj.style.opacity = speed/100;
+			obj.style.filter = 'alpha(opacity='+ speed +')';
+			
+			if ( speed == target ) {
+				clearInterval( obj.opacity );
+				endFn && endFn();
+			}
+
+		}, 20);
+}
+
+function shake ( obj, attr, endFn ) {
+	
+	if ( obj.onOff ) { return; }
+	obj.onOff = true;
+	
+	var pos = parseInt( getStyle(obj, attr) );			// 有隐患的
+	
+	var arr = [];
+	var num = 0;
+	var timer = null;
+		
+	for ( var i=20; i>0; i-=2 ) {
+		arr.push( i, -i );
+	}
+	arr.push(0);
+		
+	clearInterval( obj.shake );
+	obj.shake = setInterval(function (){
+		obj.style[attr] = pos + arr[num] + 'px';
+		num++;
+		if ( num === arr.length ) {
+			clearInterval( obj.shake );
+			endFn && endFn();
+			obj.onOff = false;
+		}
+	}, 50);
+}
+
+function getStyle ( obj, attr ) { return obj.currentStyle?obj.currentStyle[attr] : getComputedStyle( obj )[attr]; }
+</script>
+<script>
+
+		window.onload = function(){
+			var oUl = document.getElementsByTagName('ul')[0],
+				aLi = document.getElementsByTagName('li');
+
+			function toTwo(n){
+				return n < 10 ? '0' + n : '' + n
+			}
+
+			function fnTime(){
+				var myTime = new Date(),
+					iHours = myTime.getHours(),
+					iMinutes = myTime.getMinutes(),
+					iSeconds = myTime.getSeconds(),
+					str = toTwo(iHours) + ':' + toTwo(iMinutes) + ':' + toTwo(iSeconds);
+
+				function fnFlip(li, idx){
+					var oDiv = li.getElementsByTagName('div')[0],
+						aImg = li.getElementsByTagName('img');
+
+					if (str.charAt(idx) == ':'){
+						aImg[0].src = '17-colon.JPG';
+						setTimeout(function(){
+							aImg[0].src = '17-colon2.JPG';
+						}, 500)
+					} else {
+					//把每个li的第二个图片路径都改变成对应时间的数字，但是，6个时间数字并不是每个数字都在变化，而是时间在走动的某一个或者几个数字在改变，那么实际上改变路径的图片只是相应位置上时间在进行前后变化的那一个或者几个；
+						aImg[1].src = '17-' + str.charAt(idx) + '.JPG';
+						if(aImg[0].src != aImg[1].src) {
+							doMove(oDiv, 'top', 10, -70, function(){
+								aImg[0].src = aImg[1].src;
+								oDiv.style.top = 0 + 'px';
+							})
+						}
+					}
+				}
+
+				for(var i=0; i<aLi.length; i++){
+					fnFlip(aLi[i], i);
+				}
+	
+			}
+
+			setInterval(fnTime, 1000);
+
+		}
+	
+</script>
+</head>
+<body>
+<ul>
+	<li>
+		<div style="top: 0px;">
+			<img src="17-0.jpg" alt="">
+			<img src="17-0.jpg" alt="">
+		</div>
+	</li>
+	<li>
+		<div style="top: 0px;">
+			<img src="17-0.jpg" alt="">
+			<img src="17-0.jpg" alt="">
+		</div>
+	</li>
+	<li>
+		<div>
+			<img src="17-colon.JPG" alt="">
+		</div>
+	</li>
+	<li>
+		<div style="top: 0px;">
+			<img src="17-0.jpg" alt="">
+			<img src="17-0.jpg" alt="">
+		</div>
+	</li>
+	<li>
+		<div style="top: 0px;">
+			<img src="17-0.jpg" alt="">
+			<img src="17-0.jpg" alt="">
+		</div>
+	</li>
+	<li>
+		<div>
+			<img src="17-colon.JPG" alt="">
+		</div>
+	</li>
+	<li>
+		<div style="top: 0px;">
+			<img src="17-0.jpg" alt="">
+			<img src="17-0.jpg" alt="">
+		</div>
+	</li>
+	<li>
+		<div style="top: 0px;">
+			<img src="17-0.jpg" alt="">
+			<img src="17-0.jpg" alt="">
+		</div>
+	</li>
+</ul>
+</body>
+</html>

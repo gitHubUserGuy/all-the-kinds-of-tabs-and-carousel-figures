@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<title>Document</title>
+<script>
+window.onload=function() {
+	var arr=[];
+
+	var i1=0;
+	var i2=0;
+	var i3=0;
+	var num1=0;
+	var num2=0;
+	var num3=0;
+
+	var timer1=null;
+	var timer2=null;
+	var timer3=null;
+
+	timer1=setInterval(function() {
+		num1+=3;
+		i1++;
+		arr.push(num1);
+		if (i1===20) {
+			clearInterval(timer1);
+		};
+	}, 3000)
+
+	timer2=setInterval(function() {
+		num2+=4;
+		arr.push(num2);
+		i2++;
+		if (i2===20) {
+			clearInterval(timer2);
+		}
+	}, 4000)
+
+	timer3=setInterval(function() {
+		num3+=5;
+		arr.push(num3);
+		i3++;
+		if (i3===20) {
+			clearInterval(timer3);
+			Array.prototype.noRepeat=function() {
+				var arr1=[];
+				var json={};
+				for (var i=0; i<this.length; i++) {
+					if (!json[this[i]]) {
+						arr1.push(this[i]);
+						json[this[i]]=1;
+					}
+				}
+				return arr1;
+			}
+			alert(arr.noRepeat().length);
+		}
+	}, 5000)
+
+	
+}
+</script>
+</head>
+<body>
+	
+</body>
+</html>

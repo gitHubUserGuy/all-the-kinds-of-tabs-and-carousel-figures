@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+<style>
+body {background:blue; color:white; font-size:30px;}
+#div1 {width:300px; height:36px; border:1px solid #fff; }
+#div1 img {width:25px; height:36px; position:relative;}
+</style>
+<script src="jquery-1.10.1.min.js"></script>
+<script>
+$(function() {
+	function toZero(num) { return num<10? "0"+num:""+num;}
+
+	var oDate=new Date();
+	var prevStr=toZero(oDate.getHours())+toZero(oDate.getMinutes())+toZero(oDate.getSeconds());
+	var changeArr=[];
+	var nextStr="";
+
+	$("#div1 img").each(function(i,val) {
+		$(val).attr("src","17-"+prevStr.charAt(i)+".jpg");
+	})
+
+	setInterval(toChange, 1000);
+	function toChange() {
+		var oDate=new Date();
+		nextStr=toZero(oDate.getHours())+toZero(oDate.getMinutes())+toZero(oDate.getSeconds());
+		toCom(prevStr,nextStr);
+		prevStr=nextStr;
+	}
+
+	function toCom(str1,str2) {
+		changeArr=[];
+		for (var i=0; i<str1.length; i++) {
+			if (str1.charAt(i)!=str2.charAt(i)) {
+				changeArr.push(i);
+			}
+		}
+		startMove();
+	}
+
+	function startMove() {
+		var iSpeed=-4;
+		timer=setInterval(function() {
+			for (var i=0; i<changeArr.length; i++) {
+				if ( parseInt($("img").eq(changeArr[i]).css("height"))===0) {
+					iSpeed=4;
+					$("img").eq(changeArr[i]).attr("src","17-"+nextStr.charAt(changeArr[i])+".jpg");
+				}
+				$("img").eq(changeArr[i]).css("height", parseInt($("img").eq(changeArr[i]).css("height"))+iSpeed+"px");
+				$("img").eq(changeArr[i]).css("top", parseInt($("img").eq(changeArr[i]).css("height"))/2-18+"px");
+				if ($("img").eq(changeArr[i]).css("height")==="36px") {
+					clearInterval(timer);
+				}
+			} 
+		}, 20);
+
+	}
+})
+</script>
+</head>
+<body>
+	<div id="div1">
+		<img src="17-0.jpg" alt="">
+		<img src="17-0.jpg" alt="">:
+		<img src="17-0.jpg" alt="">
+		<img src="17-0.jpg" alt="">:
+		<img src="17-0.jpg" alt="">
+		<img src="17-0.jpg" alt="">
+	</div>
+</body>
+</html>

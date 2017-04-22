@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<title>Document</title>
+<style>
+*{margin:0; padding:0; }
+li {list-style:none; }
+.box {width:500px; height:300px; position:relative; margin:10px; border:3px solid gray;}
+.box .left_ul {width:100px; height:300px; position:absolute; left:0; top:0; }
+.box li {width:98px; height:98px; border:1px solid purple; line-height:98px; text-align:center; }
+.box .right_ul {width:100px; height:300px; position:absolute; left:400px; top:0; }
+.box img {width:300px; height:300px; vertical-align:top; border:none; position:absolute; left:100px; top:0; }
+.box .active {background:orange; color:white;}
+</style>
+<script src="jquery-1.10.1.min.js"></script>
+<script>
+$(function() {
+	var pic_arr=["1点.png","2点.png","3点.png","6点.png","5点.png","4点.png"];
+	var num=0;
+	var timer=null;
+
+	tab("li");
+	function tab(aLi) {
+		$(aLi).attr("class", "");
+		$(aLi).eq(num).attr("class", "active");
+		$("img").attr("src",pic_arr[num]);
+		if (num<$(aLi).length/2) {
+			num++;
+			if (num===$(aLi).length/2) num=$(aLi).length-1;
+		} else {
+			num--;
+			if (num===$(aLi).length/2 -1) num=0;
+		}
+	}
+	timer=setInterval(function() {tab("li")}, 500);
+
+})
+</script>
+</head>
+<body>
+	<div class="box">
+		<ul class="left_ul">
+			<li>1</li>
+			<li>2</li>
+			<li>3</li>
+		</ul>
+		<img src="1点.png" alt="糟糕，图片无法显示！" />
+		<ul class="right_ul">
+			<li>6</li>
+			<li>5</li>
+			<li>4</li>
+		</ul>
+	</div>
+</body>
+</html>

@@ -1,0 +1,189 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+<style>
+* {margin:0; padding:0;}
+li {list-style:none; }
+#box {width:300px; height:500px; border:1px solid purple; position:relative;}
+#nowTime {line-height:20px; }
+#nowTime span {display:block; width:300px; height:20px; line-height:20px; }
+#setTime .timeText {width:250px; height:20px; line-height:20px; border:none; background:#ccc; }
+#setTime .btn {background:orange; border:none; width:40px; height:20px; line-height:18px; color:#fff; text-align:center; }
+#restTime span {display:block; width:300px; height:20px; line-height:20px; }
+#goods {height:350px; position:absolute; top:140px;}
+#goods ul {position:absolute;}
+#goods li {height:20px; line-height:20px; }
+#goods img {border:none; width:300px; height:360px; }
+.img1 {width:66px; height:66px;}
+</style>
+<script>
+function getStyle(obj, attr) {
+	return obj.currentStyle? obj.currentStyle[attr]: getComputedStyle(obj)[attr];
+}
+
+function doMove(obj, attr, step, aim, endFn) {
+	step= parseInt(getStyle(obj, attr)) < aim? step : -step;
+	clearInterval(obj.timer);
+	obj.timer=setInterval(function() {
+		var newpos= parseInt(getStyle(obj, attr)) + step;
+		if (newpos>aim && step>0 || newpos<aim && step<0) {
+			newpos=aim;
+		}
+		obj.style[attr]= newpos + "px";
+		if (newpos===aim) {
+			clearInterval(obj.timer);
+			endFn && endFn();
+		}
+	}, 20);
+}
+
+function opa(obj, appa, aim, endFn ) {
+	appa = getStyle(obj, "opacity")*100 < aim? appa: -appa;
+	clearInterval(obj.timer1);
+	obj.timer1=setInterval(function() {
+		var newopa= parseInt(getStyle(obj, "opacity")*100) + appa;
+		if (newopa>aim && appa>0 || newopa<aim && appa<0) {
+			newopa = aim;
+		}
+		obj.style.opacity= newopa/100;
+		obj.style.filter= "alpha(opacity=" + newopa + ")";
+		if (newopa===aim) {
+			clearInterval(obj.timer1);
+			endFn && endFn();
+		}
+	}, 20);
+}
+
+function shake(obj, attr, endFn) {
+		if (obj.timer) {return;}  
+		obj.timer=true;     
+		var arr=[];
+		var num=0;
+	
+		for (var i=50; i>=0; i-=5)  arr.push(i, -i);
+		
+		clearInterval(obj.timer);
+		obj.timer=setInterval(function() {
+			var pos= parseInt(getStyle(obj, attr));
+				obj.style[attr]= pos+ arr[num] + "px";
+				num++;
+				if (num===arr.length) {
+					clearInterval(obj.timer);
+					endFn && endFn();
+					obj.timer=false;	//Õâ¸öµØ·½ºÍÉÏÒ»¸öµØ·½
+				}
+		}, 50);
+	}
+</script>
+<script>
+
+window.onload=function() {
+	var nowTime=document.getElementById("nowTime"),
+		nowSpan=nowTime.getElementsByTagName("span")[0],
+		setTime=document.getElementById("setTime"),
+		timeText=setTime.getElementsByTagName("input")[0],
+		timeBtn=setTime.getElementsByTagName("input")[1],
+		restTime=document.getElementById("restTime"),
+		restSpan=restTime.getElementsByTagName("span")[0],
+		goods=document.getElementById("goods"),
+		goodsName=document.getElementById("goodsName"),
+		goodsPrice=document.getElementById("goodsPrice"),
+		goodsImg=document.getElementsByTagName("img")[0],
+		oTbody=document.getElementsByTagName("tbody")[0],
+		tPrice=document.getElementById("totalPrice");
+	var timer=null;
+	var timer1=null;
+
+	timeStr();
+	timer=setInterval(timeStr, 1000);
+	timeBtn.onclick=function() {
+		clearInterval(timer1);
+		timer1=setInterval(function() {
+			var iNow=new Date();
+			var iNew= new Date(timeText.value);
+			var t= Math.floor((iNew-iNow)/1000);
+			var restStr=Math.floor(t/86400)+"天"+Math.floor(t%86400/3600)+"时"+Math.floor(t%86400%3600/60)+"分"+Math.floor(t%60)+"秒";
+
+			restSpan.innerHTML=restStr;
+
+			if (t==0) {
+				clearInterval(timer1);
+				shake(goods, "left", function() {
+					doMove(goods, "top", 5, 250);
+					opa(goods, 5, 0, function() {
+						   oTbody.innerHTML+= '<tr><td>' + goodsName.innerHTML + '</td><td>' + goodsPrice.innerHTML + '</td><td><img class="img1" src="' + goodsImg.src + '" /></td></tr>';
+						totalPrice.innerHTML=parseFloat(goodsPrice.innerHTML);
+					})
+				});
+			}
+		}, 1000);
+	}
+	function timeStr() {
+		var iNow= new Date();
+		var iYear=iNow.getFullYear();
+		var iMon=iNow.getMonth()+1;
+		var iDate=iNow.getDate();
+		var iHour=iNow.getHours();
+		var iMin=iNow.getMinutes();
+		var iSec=iNow.getSeconds();
+		var nowStr=iYear+"年"+iMon+"月"+iDate+"日"+toTwo(iHour)+"时"+toTwo(iMin)+"分"+toTwo(iSec)+"秒";
+
+		nowSpan.innerHTML=nowStr;
+	}
+	function toTwo(num) {
+		return num<10? "0"+num:""+num;
+	}
+
+}
+</script>
+</head>
+<body>
+	<div id="box">
+
+		<p id="nowTime">
+			当前时间：<br />
+			<span></span>
+		</p>
+		<p id="setTime">
+			下架时间(例：05 04,2017 00:00:00)：<br />
+			<input class="timeText" type="text" value="">
+			<input class="btn" type="button" value="确定">
+		</p>
+		<p id="restTime">
+			距离该商品下架只剩：
+			<span></span>
+		</p>
+
+		<div id="goods">
+			<ul>
+				<li>商&nbsp;&nbsp;品&nbsp;&nbsp;名：<span id="goodsName">美图</span></li>
+				<li>商品价格：<span id="goodsPrice">666</span>元</li>
+			</ul>
+			<img src="goods.jpg" alt="糟糕，图片无法显示！">
+		</div>
+
+	</div>
+
+	<table style="border-collapse:collapse; width:302px;">
+		<thead>
+			<tr style="background-color:gray">
+				<td>商品名</td>
+				<td>单价</td>
+				<td>数量</td>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- <tr>
+				<td>美图</td>
+				<td>666</td>
+				<td>
+					<img class="img1" src="ÉÌÆ·.jpg">
+				</td>
+			</tr> -->
+		</tbody>
+	</table>
+	总计：<span id="totalPrice"></span>元
+</body>
+</html>

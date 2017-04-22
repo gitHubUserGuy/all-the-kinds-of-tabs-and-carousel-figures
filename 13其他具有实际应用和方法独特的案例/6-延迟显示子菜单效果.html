@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+<style>
+* {margin:0; padding:0; }
+a {text-decoration:none; color:white;  }
+#wrap {margin:50px; position:relative; }
+#head_box {width:280px; height:20px; background:orange; font-weight:bold; border-radius:5px; display:box; -moz-box-shadow:0 0 3px gray; box-shadow:0 0 3px gray; }
+#head_box a {margin-right:30px; }
+p.down_page {width:260px; height:20px; line-height:20px; text-align:center; background:orange; border-radius:5px; margin:10px; display:none; position: absolute; }
+p.down_page a {margin-right:10px; }
+
+</style>
+<script>
+window.onload=function() {
+	var oHead=document.getElementById("head_box");
+	var aA=oHead.getElementsByTagName("a");
+	var aP=document.getElementsByTagName("p");
+	var timer=null;
+
+	for (var i=0; i<aA.length-1; i++) {
+		aA[i].index=i; 
+		aA[i].onmouseover=function() {
+			for (var i=0; i<aP.length; i++) {
+				aP[i].style.display="none";
+			}
+			aP[this.index].style.display="block";
+			aP[this.index].style.left=this.index*10+"px";
+			clearTimeout(timer);
+		}
+
+		aA[i].onmouseout=function() {
+			var _this=this;
+			timer=setTimeout(function() {
+				aP[_this.index].style.display="none";
+			}, 1000)
+		}
+	}
+
+	for (var i=0; i<aP.length; i++) {
+		aP[i].index=i; 
+		aP[i].onmouseover=function() {
+			clearTimeout(timer);
+		}
+		aP[i].onmouseout=function() {
+			var _this=this;
+			timer=setTimeout(function() {
+				aP[_this.index].style.display="none";
+			}, 1000)
+		}
+	}
+}
+</script>
+</head>
+<body>
+	<div id="wrap">
+
+		<div id="head_box">
+			<a href="javascript:;">首页</a>
+			<a href="javascript:;">学员</a>
+			<a href="javascript:;">课程</a>
+			<a href="javascript:;">>>更多</a>
+		</div>
+
+		<p class="down_page">
+			<a href="javascript:;">首页内容1</a>
+			<a href="javascript:;">首页内容2</a>
+			<a href="javascript:;">首页内容3</a>
+		</p>
+		<p class="down_page">
+			<a href="javascript:;">学员内容1</a>
+			<a href="javascript:;">学员内容2</a>
+			<a href="javascript:;">学员内容3</a>
+		</p>
+		<p class="down_page">
+			<a href="javascript:;">课程内容1</a>
+			<a href="javascript:;">课程内容2</a>
+			<a href="javascript:;">课程内容3</a>
+		</p>
+
+	</div>
+</body>
+</html>

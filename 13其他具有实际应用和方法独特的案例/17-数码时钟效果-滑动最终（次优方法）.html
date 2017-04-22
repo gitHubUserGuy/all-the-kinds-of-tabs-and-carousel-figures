@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+<style>
+* {margin:0; padding:0;}
+li {list-style:none; }
+#ul1 {width:650px; height:200px; }
+#ul1 li {width:80px;float:left; height:100px; position:relative; overflow:hidden;}
+#ul1 li div {width:80px; height:200px; position:absolute; top:0;}
+#ul1 li img {width:80px; height:100px; vertical-align:top; border:none; }
+
+</style>
+<script src="myJs.js"></script>
+<script>
+window.onload=function() {
+	var oUl=document.getElementById("ul1");
+	var aLi=oUl.getElementsByTagName("li");
+	var aDiv=oUl.getElementsByTagName("div");
+	var aP=oUl.getElementsByTagName("p");
+	var b=true; 
+	var nextTime="";
+	var timeChangeArr=[];
+	var oDate=new Date();
+	var timeStr=toZero(oDate.getHours())+toZero(oDate.getMinutes())+toZero(oDate.getSeconds());
+
+	for (var i=0; i<timeStr.length; i++) {
+		aDiv[i].getElementsByTagName("img")[0].src="17-"+timeStr.charAt(i)+".jpg";
+	}
+
+	var timer1=setInterval(function() {
+		if (b) {
+			aP[0].getElementsByTagName("img")[0].src="17-colon.jpg";
+			aP[1].getElementsByTagName("img")[0].src="17-colon.jpg";
+		} else {
+			aP[0].getElementsByTagName("img")[0].src="17-colon2.jpg";
+			aP[1].getElementsByTagName("img")[0].src="17-colon2.jpg";
+		}
+		b=!b;
+	},500)
+
+	setInterval(timeSlide,1000);
+	function timeSlide() {
+		var oDate=new Date();
+		nextTime=toZero(oDate.getHours())+toZero(oDate.getMinutes())+toZero(oDate.getSeconds());
+		timeChange(timeStr,nextTime); //取到1秒变动后前后两个时间
+		timeStr=nextTime;
+	}
+
+	function timeChange(str1,str2) {
+		timeChangeArr=[];
+		for (var i=0; i<str1.length; i++) {
+			if (str1.charAt(i)!=str2.charAt(i)) {
+				timeChangeArr.push(i);//取到1秒变动后前后两个时间数字不同处的索引值
+			}
+		}
+		slide(); //使1秒变动后的索引值赋给对应位置的div并使之运动
+	}
+
+	function slide() {
+		for (var i=0; i<timeChangeArr.length; i++) {
+			var j=i;
+			// 为什么先不要设置第一个图片
+			// aDiv[timeChangeArr[i]].getElementsByTagName("img")[0].src="17-"+nextTime.charAt(timeChangeArr[i])+".jpg";
+			//将被赋予索引值的div的第二个图片变成下一秒的时间，并运动
+			aDiv[timeChangeArr[i]].getElementsByTagName("img")[1].src="17-"+nextTime.charAt(timeChangeArr[i])+".jpg";
+			startMove1(aDiv[timeChangeArr[i]], {top:-100}, function() {
+					aDiv[timeChangeArr[j]].getElementsByTagName("img")[0].src=aDiv[timeChangeArr[j]].getElementsByTagName("img")[1].src;
+					aDiv[timeChangeArr[j]].style.top=0;
+				
+			});
+			
+			// startMove(aDiv[timeChangeArr[i]], "top", 10, -100, function() {
+			//  	for (var i=0; i<timeChangeArr.length; i++) {
+			//  		aDiv[timeChangeArr[i]].getElementsByTagName("img")[0].src=aDiv[timeChangeArr[i]].getElementsByTagName("img")[1].src;
+			//  		aDiv[timeChangeArr[i]].style.top=0;
+			//  	}
+				
+			// })
+
+		}
+	}
+
+
+	function toZero(num) {
+		return num<10? "0"+num:""+num;
+	}
+
+}
+</script>
+</head>
+<body>
+	<ul id="ul1">
+		<li>
+			<div>
+				<img src="17-0.jpg" alt="">
+				<img src="17-0.jpg" alt="">
+			</div>
+		</li>
+		<li>
+			<div>
+				<img src="17-0.jpg" alt="">
+				<img src="17-0.jpg" alt="">
+			</div>
+		</li>
+		<li>
+			<p>
+				<img src="17-colon.jpg" alt="">
+			</p>
+		</li>
+		<li>
+			<div>
+				<img src="17-0.jpg" alt="">
+				<img src="17-0.jpg" alt="">
+			</div>
+		</li>
+		<li>
+			<div>
+				<img src="17-0.jpg" alt="">
+				<img src="17-0.jpg" alt="">
+			</div>
+		</li>
+		<li>
+			<p>
+				<img src="17-colon.jpg" alt="">
+			</p>
+		</li>
+		<li>
+			<div>
+				<img src="17-0.jpg" alt="">
+				<img src="17-0.jpg" alt="">
+			</div>
+		</li>
+		<li>
+			<div>
+				<img src="17-0.jpg" alt="">
+				<img src="17-0.jpg" alt="">
+			</div>
+		</li>
+	</ul>
+</body>
+</html>

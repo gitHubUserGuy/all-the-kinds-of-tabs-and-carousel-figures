@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>无标题文档</title>
+<style>
+ul {margin:0; padding:0; border:1px solid #FF3333; width:200px;}
+li {margin:0; padding:0; list-style:none; width:200px; height:100px; border:1px solid #0000FF; line-height:100px; text-align:center; font-size:xx-large; font-weight:bolder}
+input {width:200px;}
+</style>
+<script> 
+window.onload=function() {
+	var oUl=document.getElementsByTagName("ul")[0];
+	var aLi=oUl.getElementsByTagName("li");
+	var oBtn= document.getElementsByTagName("input")[0];
+	var arr=["red","pink","yellow","blue","green"];
+	var m=-1;
+	var timer=null;
+	
+	for (var i=0; i<aLi.length; i++) {
+		aLi[i].style.backgroundColor=arr[i%arr.length];
+	};
+	
+	oBtn.onclick=function() {
+		clearInterval(timer);
+		timer=setInterval(fn, 500);
+	};
+	/*var onOff=true; 
+	var colorStr=["红色","粉色","黄色","蓝色","绿色"];  			//到底部后从头部再循环
+	function fn() {
+	if(onOff) {
+		m++;
+		aLi[m].style.backgroundColor ="purple";  //紫色
+		aLi[m].innerHTML="紫色";
+		aLi[m-1].style.backgroundColor= arr[m-1];
+		aLi[m-1].innerHTML= colorStr[m-1];  
+		onOff=false;
+	} else {
+		if (m==4) {
+			m=-1;
+		};
+		onOff=true;
+		}
+	}  */
+	var colorStr=["红色","粉色","黄色","蓝色","绿色"]; 				//到底部后再返回来
+	var flag=true;
+	function fn() {
+		if(flag) {
+			m++;
+			aLi[m].style.backgroundColor="purple";
+			aLi[m].innerHTML="紫色";
+			aLi[m-1].style.backgroundColor=arr[m-1];
+			aLi[m-1].innerHTML=colorStr[m-1];
+			if(m==colorStr.length-1) flag=false;
+		} else {							 	
+			m--;
+			aLi[m].style.backgroundColor="purple";
+			aLi[m].innerHTML="紫色";
+			aLi[m+1].style.backgroundColor=arr[m+1];
+			aLi[m+1].innerHTML=colorStr[m+1];
+			if (m==0) flag=true;
+		};
+	}
+}
+</script>
+</head>
+<body>
+<div>
+	<ul>
+		<li>红色</li>
+		<li>粉色</li>
+		<li>黄色</li>
+		<li>蓝色</li>
+		<li>绿色</li>
+	</ul>
+	<input type="button" value="点一下变紫色" />
+</div>
+</body>
+</html>

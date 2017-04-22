@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<title>Document</title>
+<style>
+* {margin:0; padding:0; }
+</style>
+<script src="jquery-1.10.1.min.js"></script>
+<script>
+$(function() {
+	var num=0;
+	var n=0;
+	var t1=0;
+	var t2=0;
+	var n1=0;
+	var arr=[];
+
+	function fn() {
+		t1=0;
+		t2=0;//使得总计商品不会重复加上已经加总到共计的数量
+		$("strong").eq(n).html(num);
+		$("#box span").eq(n).html(num*$("em").eq(n).html());
+		$("strong").each(function(i, val) {
+			t1+=parseInt($(val).html());
+			// if (parseInt($("strong").eq(i).html()) != 0) {
+			// 	arr.push(parseFloat($("em").eq(i).html()));
+			// }
+			//这样做无法剔除商品数量回到0时放入数组的单价
+			//下面的方法才能使得数量为0时数组中没有相应单价
+			if (parseInt($("strong").eq(i).html()) != 0) {
+				arr[i]=parseFloat($("em").eq(i).html());
+			} else {
+				arr[i]=0;
+			}
+		});
+		$("#box span").each(function(i, val) {
+			t2+=parseFloat($(val).html());
+		});
+		n1=arr[0];
+		$.each(arr,function(i, val) {
+			if (n1<val) n1=val;
+		});
+		$("#amount").html(t1);
+		$("#total").html(t2);
+		$("#max").html(n1);
+	};
+
+	$(".minus").each(function(j, val) {
+		$(val).on("click",function() {
+		//	num=0;
+		//会使每一次点击使得num回到0，下同
+		//但如果不要这一项会使得几个strong值之间共用一个num
+		//因此，每个strong都分别用自己的值才能解决这个问题
+		//类似自定义自身属性
+			num=$("strong").eq(j).html();
+			n=j;
+			if (num>0) num--;
+			fn();
+		})
+	})
+	$(".plus").each(function(k, val) {
+		$(val).on("click",function() {
+		//	num=0;
+
+			num=$("strong").eq(k).html();
+			n=k;
+			num++;
+			fn();
+		})
+	})
+})
+</script>
+</head>
+<body>
+	<ul id="box">
+		<li>
+			<input class="minus" type="button" value="-" >
+			<strong>0</strong>
+			<input class="plus" type="button" value="+" >
+			单价：<em>12.5</em>元
+			小计：<span>0</span>元
+		</li>
+		<li>
+			<input class="minus" type="button" value="-" >
+			<strong>0</strong>
+			<input class="plus" type="button" value="+" >
+			单价：<em>10.5</em>元
+			小计：<span>0</span>元
+		</li>
+		<li>
+			<input class="minus" type="button" value="-" >
+			<strong>0</strong>
+			<input class="plus" type="button" value="+" >
+			单价：<em>8.5</em>元
+			小计：<span>0</span>元
+		</li>
+	</ul>
+	<div id="account">
+		商品共计：<span id="amount">0</span>件，共花费：<span id="total">0</span>元；<br />
+		其中购买的最贵商品单价是：<span id="max">0</span>元。
+	</div>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+<style>
+* {margin:0; padding:0}
+li {list-style: none;}
+#ul1 {width:600px;height:250px; position: relative;}
+#ul1 li {width:100px; height:100px; background: purple; float:left; margin:10px; }
+div {margin:50px;}
+a {text-decoration: none; color:black; font-weight: bold; margin:10px;}
+</style>
+<script type="text/javascript" src="jquery-1.10.1.min.js"></script>
+<script>
+$(function() {
+	var json={
+		"title":["课程1","课程2","课程3","课程4","课程5","课程6","课程7","课程8","课程9","课程10","课程11","课程12","课程13","课程14","课程15","课程16","课程17","课程18","课程19","课程20","课程21","课程22","课程23","课程24","课程25","课程26","课程27","课程28","课程29","课程30","课程31","课程32","课程33","课程34"]
+	}
+
+	var arr=[];
+	var iNow=9;
+
+	page({
+		id: "box",
+		nowNum: 1,
+		allNum: Math.ceil(json.title.length/10),
+		callBack: function(now, all) {
+			var num=now*10<json.title.length? 10: json.title.length-(now-1)*10;
+
+			if (!$("#ul1").html()) {
+
+				for (var i=0; i<num; i++) {
+					var oLi=document.createElement("li");
+					$(oLi).html( json.title[(now-1)*10+i] );
+					$(oLi).appendTo($("#ul1"));
+				}
+				for (var i=0; i<$("#ul1 li").size(); i++) {
+					arr.push([$("#ul1 li").eq(i).offset().left, $("#ul1 li").eq(i).offset().top]);
+				}	
+				for (var i=0; i<$("#ul1 li").size(); i++) {
+					$("#ul1 li").css("position", "absolute");
+					$("#ul1 li").css("margin",0);
+					$("#ul1 li").eq(i).css({left:arr[i][0], top:arr[i][1]});
+				}
+					
+			} else {
+
+				var timer1=setInterval(function() {
+					$("#ul1 li").eq(iNow).animate({left:200, top:250, opacity:0}, 500, "swing");
+					if (iNow===0) {
+						clearInterval(timer1);
+						iNow=num-1;
+						for (var i=0; i<num; i++) {
+							$("#ul1 li").html( json.title[(now-1)*10+i] )
+						}
+						var timer2=setInterval(function() {
+							$("#ul1 li").eq(iNow).animate({left:arr[iNow][0], top:arr[iNow][1], opacity:100});
+							if (iNow===0) {
+								clearInterval(timer2);
+								iNow=num-1;
+							} else {
+								iNow--;
+							}
+						}, 50)
+					} else {
+						iNow--;
+					}
+				}, 50)
+				
+				
+
+
+
+			}
+		}
+	});	
+
+		function page(opt) {
+			if (!opt.id) return false;
+
+			var obj=document.getElementById(opt.id);
+
+			var nowNum=opt.nowNum || 1;
+			var allNum=opt.allNum || 5;
+			var callBack=opt.callBack || function() {};
+
+			if (nowNum>=4 && allNum>=6) {
+				var oA=document.createElement("a");
+				$(oA).attr("href", "#1");
+				$(oA).html("首页");
+				$(obj).append(oA);
+			}
+
+			if (nowNum>=2) {
+				var oA=document.createElement("a");
+				$(oA).attr("href", '#'+(nowNum-1));
+				$(oA).html("上一页");
+				$(obj).append(oA);
+			}
+
+			if (allNum<=5) {
+				for (var i=1; i<=allNum; i++) {
+					var oA=document.createElement("a");
+					$(oA).attr("href",'#'+i);
+					if (nowNum===i) {
+						$(oA).html(i);
+					} else {
+						$(oA).html("["+i+"]");
+					}
+					$(obj).append(oA);
+				}
+			} else {
+				for (var i=1; i<=5; i++) {
+					var oA=document.createElement("a");
+
+					if (nowNum==1 || nowNum==2) {
+						$(oA).attr("href", "#"+i);
+						if (nowNum==i) {
+							$(oA).html(i);
+						} else {
+							$(oA).html("["+i+"]");
+						}
+					} else if ( (allNum-nowNum)==0 || (allNum-nowNum)==1 ) {
+						$(oA).attr("href", "#"+(allNum-5+i));
+						if ( (allNum-nowNum)==0 && i==5 ) {
+							$(oA).html(allNum-5+i);
+						} else if ( (allNum-nowNum)==1 && i==4 ) {
+							$(oA).html(allNum-5+i);
+						} else {
+							$(oA).html("["+(allNum-5+i)+"]");
+						}
+					} else {
+						$(oA).attr("href","#"+(nowNum-3+i));
+						if (i==3) {
+							$(oA).html(nowNum-3+i);
+						} else {
+							$(oA).html("["+(nowNum-3+i)+"]");
+						}
+					}
+					$(obj).append(oA);
+				}
+			}
+
+			if ( (allNum-nowNum)>=1 ) {
+				var oA=document.createElement("a");
+				$(oA).attr("href","#"+(nowNum+1));
+				$(oA).html("下一页");
+				$(obj).append(oA);
+			}
+
+			if ( (allNum-nowNum)>=3 && allNum>=6 ) {
+				var oA=document.createElement("a");
+				$(oA).attr("href","#"+allNum);
+				$(oA).html("尾页");
+				$(obj).append(oA);
+			}
+
+			callBack(nowNum,allNum);
+
+			$("a").on("click",function() {
+				var nowNum=parseInt($(this).attr("href").substring(1));
+				$(obj).html("");
+				page({
+					id:opt.id,
+					nowNum:nowNum,
+					allNum:allNum,
+					callBack:callBack
+				});
+				return false;
+			})
+		}
+
+
+	
+})
+</script>
+</head>
+<body>
+	<ul id="ul1"></ul>
+	<div id="box"></div>
+</body>
+</html>

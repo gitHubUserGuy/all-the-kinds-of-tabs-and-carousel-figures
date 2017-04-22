@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>无缝轮播</title>
+<style>
+* {margin:0; padding:0; }
+li {list-style: none; }
+#box {width:400px; height:400px; border:1px solid purple; position: relative; overflow: ; margin-left:450px; }
+#box ul {height:300px; position: absolute; top:0; left:0; }
+#box ul li {width:400px; height:300px; float:left; }
+#box ul li img {width:400px; height:300px; vertical-align: top; border:none; }
+#box div {width:100%; position: absolute; bottom:50px; text-align: center; }
+#box div a {width:20px; height:20px; background:purple; border-radius: 50%; display: inline-block; text-decoration: none; }
+#box div a.active {background: gray; }
+</style>
+<script type="text/javascript" src="myJs.js"></script>
+<script type="text/javascript">
+window.onload=function() {
+	var oUl=document.getElementById("img_ul");
+	var aLi=oUl.getElementsByTagName("li");
+	var aImg=oUl.getElementsByTagName("img"); 
+	var oBtn=document.getElementById("btn_div");
+	var aBtn=oBtn.getElementsByTagName("a");
+	var iNow=0;
+	var iNow2=0;
+
+	oUl.style.width=aLi.length*aLi[0].offsetWidth+"px";
+
+	for (var i=0; i<aBtn.length; i++) {
+		aBtn[i].index=i; 
+		aBtn[i].onclick=function() {
+			startMove1(oUl, {left:-this.index*aLi[0].offsetWidth});
+			for(var i=0; i<aBtn.length; i++) {
+				aBtn[i].className="";
+			}
+			this.className="active";
+		}
+	}
+
+	//不操作DOM节点就实现无缝轮播的方法
+	setInterval(toSlide, 2000);
+	toSlide();
+	function toSlide() {
+		iNow++; //用于控制btn的状态
+		iNow2++; //用于控制图片轮播(到了最后一张再单向播放第一张)
+		if(iNow===aLi.length) {
+			iNow=0;
+			aLi[0].style.position="relative";
+			//为第一张设置相对定位，实现既保存其文档流位置，又能在最后一张播放即将结束时将其拉至最后一张的最后的功能
+			aLi[0].style.left=aLi.length*aLi[0].offsetWidth+"px";
+			//将第一张图片拉到最后一张的后面
+		}
+		startMove1(oUl, {left:-iNow2*aLi[0].offsetWidth}, function() {
+			if (iNow===0) {
+				aLi[0].style.position="static"; 
+				//当位于最后一张后面的第一张出现后将其改为默认定位(拉回到了原来的位置)，并再次轮播
+				oUl.style.left=0; //第一张拉回原位置后再次从头轮播
+				iNow2=0; //第一张拉回原位置后再次从头轮播
+			}
+		});
+		for(var i=0; i<aBtn.length; i++) {
+			aBtn[i].className="";
+		}
+		aBtn[iNow].className="active";
+	}
+
+}
+</script>
+</head>
+<body>
+<div id="box">
+	<ul id="img_ul">
+		<li><img src="2-2-1.jpg" alt=""></li>
+		<li><img src="2-2-2.jpg" alt=""></li>
+		<li><img src="2-2-3.jpg" alt=""></li>
+	</ul>
+	<div id="btn_div">
+		<a href="javascript:;" class="active"></a>
+		<a href="javascript:;"></a>
+		<a href="javascript:;"></a>
+	</div>
+</div>
+</body>
+</html>

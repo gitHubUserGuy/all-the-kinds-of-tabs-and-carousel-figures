@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+<style>
+body {background:blue; color:white; font-size:30px; }
+#div1 {width:300px; height:36px; border:1px #fff solid; }
+#div1 img {width:25px; height:36px; position:relative; }
+
+</style>
+<script>
+window.onload=function() {
+	var aImg=document.getElementsByTagName("img");
+	var oDate=new Date();
+	var prevStr=toZero(oDate.getHours())+toZero(oDate.getMinutes())+toZero(oDate.getSeconds());
+	var changeArr=[];//存上一次和下一次时间不同的数字以便添加动态效果
+	var nextStr="";//存下一次时间数字以便于上一次时间区分不同的时间数字
+
+	for (var i=0; i<prevStr.length; i++) {
+		aImg[i].src="17-"+prevStr.charAt(i)+".jpg"
+	}
+
+	//获取前后两次时分秒数字不同的地方，以便为时间改变的某几个图片添加动态效果！
+	setInterval(toChange,1000);
+	function toChange() {
+		var oDate=new Date();
+		nextStr=toZero(oDate.getHours())+toZero(oDate.getMinutes())+toZero(oDate.getSeconds());
+		// console.log(prevStr);
+		// console.log(nextStr);
+
+		toCom(prevStr,nextStr);
+
+		prevStr=nextStr;//让上一次的时间等于本次的时间，同时本次的时间不断刷新，每次都取得相邻两次的时间
+	}
+
+	function toCom(str1,str2) {
+		changeArr=[];//时间每一秒后都存最新变动的值
+		for (var i=0; i<str1.length; i++) {
+			if (str1.charAt(i)!=str2.charAt(i)) {
+				changeArr.push(i);//把每一次变动的时间的位置存起来供取对应位置的图片
+			}
+		}
+		startMove();
+	}
+
+	function startMove() {
+		var iSpeed=-4;//计算高度并先让高度变小
+		timer=setInterval(function() {
+			for (var i=0; i<changeArr.length; i++) {
+				//当图片高度减小到0时需要重新变高，让速度变为正数，同时让相应图片的路径改变成下一次不同的时间的位置(索引值)
+				if (aImg[changeArr[i]].offsetHeight===0) {
+					iSpeed=4;
+					aImg[changeArr[i]].src="17-"+nextStr.charAt(changeArr[i])+".jpg";
+				}
+				aImg[changeArr[i]].style.height=aImg[changeArr[i]].offsetHeight+iSpeed+"px";
+				//变换高度的同时变化top值使得图片在中间翻转。此时图片的top与高度有关，当高度每减小4，top值都要-2
+				aImg[changeArr[i]].style.top=aImg[changeArr[i]].offsetHeight/2-18+"px";
+				//高度每次增高为预设高度时清除，避免高度更高
+				if (aImg[changeArr[i]].offsetHeight===36) {
+					clearInterval(timer);
+				}
+			}
+		},20)
+	}
+
+	//补0，同时让大于10的时候的数字成为字符串
+	function toZero(num) {
+		return num<10? "0"+num:""+num;
+	}
+
+}
+</script>
+</head>
+<body>
+	<div id="div1">
+		<img src="17-0.jpg" alt="">
+		<img src="17-0.jpg" alt="">:
+		<img src="17-0.jpg" alt="">
+		<img src="17-0.jpg" alt="">:
+		<img src="17-0.jpg" alt="">
+		<img src="17-0.jpg" alt="">
+	</div>
+</body>
+</html>

@@ -1,0 +1,81 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<title>Document</title>
+<style>
+ul, li, p {margin:0; padding:0; list-style:none;}
+#list {width:100px; float:left }
+#list span {display:block; height:200px; border:1px solid purple; line-height:200px; text-align:center; background-color:#66FF00; color:white; cursor:pointer}
+div {float:left; position:relative; width:400px; height:402px; border:1px solid purple; }
+img {width:400px; height:402px; position:absolute; display:none;}
+#div1 ul {position:absolute; width:400px; bottom:0; display:none;}
+#div1 li {height:50px; border:1px solid purple; line-height:50px; text-align:center; background-color:#66FF00; color:white; cursor:pointer; display:table-cell;}
+.active { font-weight:bold; filter:alpha(opacity=50); opacity:0.5;}
+</style>
+<script src="jquery-1.10.1.min.js"></script>
+<script>
+$(function() {
+	var timer=null;
+	var numLi=0; 
+	var numImg=0;
+	var pic_arr= [
+		["img/1.jpg", "img/2.jpg", "img/3.jpg","img/4.jpg","img/miaov.jpg"],
+		["img/1.png", "img/2.png", "img/3.png","img/4.png"]
+	];
+
+	timer=setInterval(function() {
+		$("span").attr("class","");
+		$("span").eq(numImg).attr("class","active");
+		$("li").attr("class","");
+		$("li").eq(numLi).attr("class","active");
+		$("img").css("display","none");
+		$("img").eq(numImg).css("display","block");
+		$("img").eq(numImg).attr("src",pic_arr[numImg][numLi]);
+		$("ul").css("display","none");
+		$("ul").eq(numImg).css("display","table");
+		numLi++;
+		if (numLi===$("#list1 li").size()+1) {
+			$("img").eq(numImg).css("display",
+				"none");
+			$("ul").eq(numImg).css("display","none");
+			$("span").eq(numImg).attr("class","");
+			numImg=1;
+			$("img").eq(numImg).css("display","block");
+			$("img").eq(numImg).attr("src",pic_arr[numImg][numLi-$("#list1 li").size()-1]);
+			$("ul").eq(numImg).css("display","table");
+			$("span").eq(numImg).attr("class","active");
+		} else if (numLi===$("li").size()) {
+			numImg=0;
+			numLi=0;
+		}
+	}, 1000)
+
+
+})
+</script>
+</head>
+<body>
+<p id="list">
+	<span class="active">大选项卡1</span>
+	<span>大选项卡2</span>
+</p>
+<div id="div1">
+	<img src="img/1.jpg" style="display:block" />
+	<ul id="list1" style="display:table" >
+		<li class="active">选项卡1</li>
+		<li>选项卡2</li>
+		<li>选项卡3</li>
+		<li>选项卡4</li>
+		<li>选项卡5</li>
+	</ul>
+	<img src="img/4.jpg" />
+	<ul id="list2">
+		<li class="active">选项卡1</li>
+		<li>选项卡2</li>
+		<li>选项卡3</li>
+		<li>选项卡4</li>
+	</ul>
+</div>
+</body>
+</html>

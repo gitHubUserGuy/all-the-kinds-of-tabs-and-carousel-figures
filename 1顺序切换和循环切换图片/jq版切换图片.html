@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<title>Document</title>
+<style>
+* {margin:0; padding:0;}
+#big_box {width:300px; height:353px; border:3px solid purple; margin:20px; }
+#big_box span {width:300px; height:50px; display:inline-block; text-align:center; line-height:50px; border-bottom:3px solid purple; }
+#big_box #pic_box {width:300px; height:300px; position:relative; }
+#big_box #pic_box img {width:300px; height:300px; vertical-align:top; border:none; }
+#big_box #pic_box p {width:300px; height:30px; position:absolute; background:black; color:white; opacity:0.5; filter:alpha(opacity=50); line-height:30px; text-align:center; }
+#big_box #pic_box .count {top:0; }
+#big_box #pic_box .name {bottom:0; }
+#big_box #pic_box a {display:inline-block; text-decoration:none; color:white; width:30px; height:30px; line-height:30px; text-align:center; font-weight:bold; background:gray; border:3px solid purple; position:absolute; top:132px; }
+#big_box #pic_box .pre {left:10px; }
+#big_box #pic_box .next {right:10px; }
+</style>
+<script src="jquery-1.10.1.min.js"></script>
+<script>
+$(function() {
+	var picArr=["img/1.jpg","img/2.jpg","img/3.jpg","img/4.jpg"];
+	var nameArr=["人物1","人物2","人物3","人物4"]
+	var b=0;
+	var iNow=0;
+
+	$("input").on("click",function() {
+		b=$(this).index();
+	})
+
+	function tab() {
+		$("img").attr("src", "img/"+(iNow+1)+".jpg");
+		$(".count").html(iNow+1+" / "+$(picArr).size());
+		$(".name").html(nameArr[iNow]);
+	}
+
+	tab();
+	$(".pre").on("click", function() {
+		iNow--;
+		if (iNow<0) {
+			switch (b) {
+				case 0:
+					iNow=picArr.length-1;
+				break;
+				case 1:
+					iNow=0;
+					alert("已经到第一张啦！")
+				break;
+			}
+		}
+		tab();
+	})
+	$(".next").on("click", function() {
+		iNow++;
+		if (iNow>picArr.length-1) {
+			switch (b) {
+				case 0:
+					iNow=0;
+				break;
+				case 1:
+					iNow=picArr.length-1;
+					alert("已经到最后一张啦！")
+				break;
+			}
+		}
+		tab();
+	})
+
+})
+</script>
+</head>
+<body>
+	<div id="big_box">
+		<span>
+			<input type="button" value="循环模式">
+			<input type="button" value="单向模式">
+		</span>
+		<div id="pic_box">
+			<img src="img/1.jpg" />
+			<p class="count">onloading...</p>
+			<p class="name">onloading...</p>
+			<a class="pre" href="javascript:;"><<</a>
+			<a class="next" href="javascript:;">>></a>
+		</div>
+	</div>
+</body>
+</html>

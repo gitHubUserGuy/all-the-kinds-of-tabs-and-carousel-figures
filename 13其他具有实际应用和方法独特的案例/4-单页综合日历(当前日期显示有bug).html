@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+<style>
+* {margin:0; padding:0;}
+</style>
+<script src="jquery-1.10.1.min.js"></script>
+<script>
+window.onload=function() {
+	var leftMon=document.createElement("span");
+	var rightMon=document.createElement("span");
+	var leftYear=document.createElement("span");
+	var rightYear=document.createElement("span");
+	//var monthNum=1; 
+	//var yearNum=2017;
+	var oDate=new Date();
+	var monthNum=oDate.getMonth()+1;
+	var yearNum=oDate.getFullYear();
+
+	leftMon.onclick=function() {
+		monthNum--;
+		if (monthNum===0) {
+			yearNum--;
+			monthNum=12;
+		}
+		document.body.innerHTML="";
+		calender(yearNum,monthNum);
+	}
+	rightMon.onclick=function() {
+		monthNum++;
+		if (monthNum===13) {
+			yearNum++
+			monthNum=1; 
+		}
+		document.body.innerHTML="";
+		calender(yearNum,monthNum);
+	}
+
+	leftYear.onclick=function() {
+		yearNum--;
+		document.body.innerHTML="";
+		calender(yearNum,monthNum);
+	}
+	rightYear.onclick=function() {
+		yearNum++;
+		document.body.innerHTML="";
+		calender(yearNum,monthNum);
+	}
+
+	calender(yearNum,monthNum);
+	function calender(oyear, omonth) {
+		//第一部分，取(闰)年、每月天数、第一日星期，每日多少天
+		function isLeapYear(year) {
+			if ( (year%4===0 && year%4!=0) || year%400===0 ) {
+				return 29; //闰年二月
+			} else {
+				return 28; //平年二月
+			}
+		}
+		var oDate=new Date() ; 
+		// var iYear=oDate.getFullYear();
+		// var iMonth=oDate.getMonth();
+
+		oDate.setFullYear(oyear);
+		oDate.setMonth(omonth-1);
+
+		var iDate=oDate.getDate();
+		var firstDate=new Date(oyear, omonth-1, 1);//每个月第一天多少号
+		var firstDay=firstDate.getDay();//每个月第一天星期几
+
+		var dateArray=new Array(31, isLeapYear(oyear),31,30,31,30,31,31,30,31,30,31); //每个月天数
+
+		//第二部分，判断每个月的格子行数，确定每格td序列号并根据第一天星期打印格子并加入日期；
+		var dateRow=Math.ceil((dateArray[omonth-1]+firstDay)/7); 
+//关键1：每月日期行数的计算方法
+
+		var dayArray=["日","一","二","三","四","五","六"]
+		var oBox=document.createElement("div");
+		var oTable=document.createElement("table");
+		oTable.width=200;
+		oTable.border=1;
+		//oTable.style.borderCollapse="collapse";
+		var oThead=document.createElement("thead");
+		var oTbody=document.createElement("tbody");
+		var oTr=document.createElement("tr");
+
+		for (var i=0; i<7; i++) {
+			var oTh=document.createElement("th");
+			oTh.innerHTML=dayArray[i];
+			oTr.appendChild(oTh);
+		}
+		oThead.appendChild(oTr);
+
+		for (var i=0; i<dateRow; i++) {
+	//关键1：根据上面的计算生成相应行数
+			var oTr=document.createElement("tr");
+			for (var j=0; j<7; j++) {
+				var oTd=document.createElement("td");
+				oTd.align="center";
+	//关键2：利用每格的从0开始的序列号和下面的三目判断写入格子中对应的日期号数
+				var tdIndex=i*7+j;
+				//oTd.innerHTML=tdIndex-firstDay+1;//号数计算
+				oTd.innerHTML=tdIndex-firstDay+1<1 || tdIndex-firstDay+1>dateArray[omonth-1]? "": tdIndex-firstDay+1;
+				oTr.appendChild(oTd);
+				if ( parseInt(oTd.innerHTML)===iDate && omonth-1===oDate.getMonth() && oyear===oDate.getFullYear() ) {
+					oTd.style.color="red";
+					oTd.style.fontSize="20px";
+				}
+			}
+			oTbody.appendChild(oTr);
+		}
+		oTable.appendChild(oThead);
+		oTable.appendChild(oTbody);
+
+		var oTitle=document.createElement("p");
+		oTitle.style.background="blue";
+		oTitle.style.color="white";
+		oTitle.style.fontWeight="bold";
+		oTitle.style.textAlign="center";
+		oTitle.style.width="200px";
+		oTitle.style.height="30px";
+		oTitle.style.lineHeight="30px";
+		oTitle.style.cursor="pointer";
+		oTitle.innerHTML=oyear+"年"+omonth+"月";
+
+		leftYear.innerHTML="<<";
+		leftYear.style.float="left";
+		leftYear.style.color="orange";
+		rightYear.innerHTML=">>";
+		rightYear.style.float="right";
+		rightYear.style.color="orange";
+
+		leftMon.innerHTML="<";
+		leftMon.style.float="left";
+		leftMon.style.color="white";
+		rightMon.innerHTML=">";
+		rightMon.style.float="right";
+		rightMon.style.color="white";
+
+		oTitle.appendChild(leftYear);
+		oTitle.appendChild(rightYear);
+		oTitle.appendChild(leftMon);
+		oTitle.appendChild(rightMon);
+		oBox.appendChild(oTitle);
+		oBox.appendChild(oTable);
+
+		document.body.appendChild(oBox);
+
+	}
+
+}
+</script>
+</head>
+<body>
+</body>
+</html>

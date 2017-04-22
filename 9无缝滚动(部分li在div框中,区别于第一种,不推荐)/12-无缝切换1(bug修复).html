@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+<style>
+* {margin:0; padding:0; }
+li {list-style:none; }
+#wrap {width:430px; height:100px; position:relative; border:1px solid purple; margin:50px; overflow:visible;}
+.ul1 {height:100%; position:absolute; left:0; top:0; }
+.ul1 li {width:100px; height:100px; float:left; margin-right:10px; }
+.ul1 li img {width:100px; height:100px; vertical-align:top; border:none; }
+</style>
+<script src="myJs.js"></script>
+<script>
+window.onload=function() {
+	var oBtn=document.getElementById("btn");
+	var oWrap=document.getElementById("wrap");
+	var oUl=oWrap.getElementsByTagName("ul")[0];
+	var aLi=oUl.getElementsByTagName("li");
+	var flag=true;
+
+	var oLiWidth=aLi[0].offsetWidth+10;
+	oUl.style.width=oLiWidth*aLi.length+"px";
+	var num=Math.floor(oWrap.offsetWidth/oLiWidth);//动态计算在div框中的li的个数
+
+	//注意：这个无缝切换不同于之前的无缝轮播。之前的无缝轮播是所有的li都在div框中(这种情况对ul采取的方式是加长原来ul至两倍width，在后面一半即将播放结束时将left设置为0或者负的半个ul宽度的left值)，而这个无缝切换则是一部分li在框中另一些被隐藏，此时采取cloneNode()方法，比如轮播时往左走并且所有的li轮播完成时，将隐藏在左边的li克隆而不是剪切至最右边，同时逐个移除在左边的li。cloneNode()方法接受两个参数:true为同时克隆其下的子节点，false则只克隆自身
+	oBtn.onclick=function() {
+		if (flag) {
+			flag=false;
+			for (var i=0; i<num; i++) {
+				var oLi=aLi[i].cloneNode(true);
+				oUl.appendChild(oLi);
+				oUl.style.width=oLiWidth*aLi.length+"px";
+			}
+			startMove1(oUl, {left:-num*oLiWidth}, function() {
+				for (var i=0; i<num; i++) {
+					oUl.removeChild(oUl.children[0]);
+					oUl.style.left=0;
+				}
+				flag=true;//当没有运动完一次时，flag始终是false，无法开始下一次运动
+			});
+		}
+	}
+	//bug：当迅速点击oBtn时，会不断克隆隐藏在左边的节点，而此时也许移除节点还没有完成，所以ul会不断变长
+}
+</script>
+</head>
+<body>
+	<input type="button" value="按钮" id="btn">
+	<div id="wrap">
+		<ul class="ul1">
+			<li><img src="2-2-1.jpg" alt=""></li>
+			<li><img src="2-2-2.jpg" alt=""></li>
+			<li><img src="2-2-3.jpg" alt=""></li>
+			<li><img src="2-2-4.jpg" alt=""></li>
+			<li><img src="2-2-5.jpg" alt=""></li>
+		</ul>
+	</div>
+</body>
+</html>

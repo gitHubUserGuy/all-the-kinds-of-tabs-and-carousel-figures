@@ -1,0 +1,72 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<title>Document</title>
+<style>
+* {margin:0; padding:0; }
+li {list-style:none;}
+.box {margin:10px; width:400px; height:360px; border:2px solid gray; position: relative;}
+.box .big_sele {width:100px; height:360px; }
+.box .big_sele li {width:98px; height:178px; border:1px solid purple; background:orange; line-height:178px; text-align:center; color:white; cursor:pointer;}
+.box .big_sele .active {filter: alpha(opacity=60); opacity: 0.6;}
+.box .img_div {width:300px; height:310px; position:absolute; top:0; left:100px; }
+.box .img_div img {width:300px; height:310px; vertical-align:top; border:none; }
+.box .sma_sele {width:300px; height:48px; position:absolute; left:100px; top:310px;}
+.box .sma_sele li {display:table-cell; border:1px solid purple; height:48px; line-height:48px; text-align:center; background:orange; color:white; cursor: pointer;}
+.box .sma_sele .active {filter: alpha(opacity=60); opacity: 0.6;}
+</style>
+<script src="jquery-1.10.1.min.js"></script>
+<script>
+$(function() {
+	var pic_arr=[
+		["img/1.png","img/2.png"],
+		["img/3.png","img/4.png","img/active.png"],
+	];
+	var n=0;
+	var m=0;
+
+	tab(0, 0);
+	function tab(iNow, num) {
+		$(".big_sele li").attr("class","");
+		$(".big_sele li").eq(iNow).attr("class","active");
+		$(".sma_sele").css("display","none");
+		$(".sma_sele").eq(iNow).css("display", "table");
+		$(".sma_sele").eq(iNow).children().attr("class","");
+		$(".sma_sele").eq(iNow).children().eq(num).attr("class","active");
+		$(".img_div img").attr("src", pic_arr[iNow][num]);
+	}
+
+	$(".big_sele li").on("click",function() {
+		n=$(this).index();
+		tab(n, 0 );  
+		//bug:使得每一次换大选项卡，旗下小选项卡都会回到第一个
+	})
+
+	$(".sma_sele li").on("click",function() {
+		tab(n , $(this).index());
+	})
+})
+</script>
+</head>
+<body>
+	<div class="box">
+		<ul class="big_sele">
+			<li>大选项卡1</li>
+			<li>大选项卡2</li>
+		</ul>
+		<ul class="sma_sele">
+			<li>小选项卡1</li>
+			<li>小选项卡2</li>
+		</ul>
+		<ul class="sma_sele">
+			<li>小选项卡1</li>
+			<li>小选项卡2</li>
+			<li>小选项卡3</li>
+		</ul>
+		<div class="img_div">
+			<img src="img/1.png" alt="糟糕，图片无法显示！" />
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+<style>
+* {margin:0; padding:0;}
+li {list-style: none;}
+#box {width:600px; height: 300px; position: relative; border:1px solid purple; }
+#ul1 li {position: absolute; }
+#ul1 li:nth-child(1) {width:200px; height:100px; left:0px; top:100px; z-index: 1}
+#ul1 li:nth-child(2) {width:200px; height:100px; left:0px; top:100px; z-index: 2}
+#ul1 li:nth-child(3) {width:200px; height:100px; left:0px; top:100px; z-index: 3}
+#ul1 li:nth-child(4) {width:400px; height:200px; left:100px; top:50px; z-index:4}
+#ul1 li:nth-child(5) {width:200px; height:100px; left:400px; top:100px; z-index: 3}
+#ul1 li:nth-child(6) {width:200px; height:100px; left:400px; top:100px; z-index: 2}
+#ul1 li:nth-child(7) {width:200px; height:100px; left:400px; top:100px; z-index: 1}
+#box #prev {width:50px; height:50px;line-height: 50px;  position: absolute; font-size:32px; font-weight: bold; left:250px; top:250px; cursor: pointer;}
+#box #next {width:50px; height:50px;line-height: 50px;  position: absolute; font-size:32px; font-weight: bold; left:300px; top:250px; cursor: pointer; }
+</style>
+<script>
+	function getStyle(obj, attr) {
+		return obj.currentStyle? obj.currentStyle[attr]:getComputedStyle(obj, false)[attr];
+	}
+
+	//buffer运动效果
+	function bufferMove(obj, json, fn) {
+		clearInterval(obj.timer);
+		obj.timer=setInterval(function() {
+			var b=true;
+			for (var attr in json) {
+				var iCur=0;
+				if (attr==="opacity") {
+					iCur=parseInt(parseFloat(getStyle(obj,attr))*100);
+				} else {
+					iCur=parseInt(getStyle(obj, attr));
+				}
+
+				var iSpeed=(json[attr]-iCur)/8;
+				iSpeed=iSpeed>0? Math.ceil(iSpeed):Math.floor(iSpeed);
+
+				if (attr==="opacity") {
+					obj.style.opacity=(iCur+iSpeed)/100;
+					obj.style.filter="alpha(opacity="+(iCur+iSpeed)+")";
+				} else {
+					obj.style[attr]=(iCur+iSpeed)+"px";
+				}
+
+				if (iCur != json[attr]) b=false; 
+
+				if (b) {
+					clearInterval(obj.timer);
+					fn && fn();
+				}
+
+			}
+		},20)
+	}
+</script>
+<script>
+window.onload=function() {
+	var oPrev=document.getElementById("prev");
+	var oNext=document.getElementById("next");
+	var oUl=document.getElementById("ul1");
+	var aLi=oUl.getElementsByTagName("li");
+	var aImg=document.getElementsByTagName("img");
+
+	var arr=[];
+	for(var i=0; i<aLi.length; i++) {
+		arr.push([
+			parseInt(getStyle(aLi[i],"left")),
+			parseInt(getStyle(aLi[i],"top")),
+			parseInt(getStyle(aLi[i],"width")),
+			parseInt(getStyle(aLi[i],"height")),
+			parseInt(getStyle(aLi[i],"zIndex")),
+			parseInt(aImg[i].width),
+			parseInt(aImg[i].height)
+
+		])
+	}
+	console.dir(arr)
+	oPrev.onclick=function() {
+		arr.unshift(arr[arr.length-1]);//把数组最后一项添加到第一项
+		arr.pop(); //删除数组最后一项
+		for (var i=0; i<aLi.length; i++) {
+			aLi[i].style.zIndex=arr[i][4];//写在下面不行，为什么？
+			bufferMove(aLi[i], {
+				left:arr[i][0],
+				top:arr[i][1],
+				width:arr[i][2],
+				height:arr[i][3]
+			});
+			bufferMove(aImg[i], {
+				width:arr[i][5],
+				height:arr[i][6]
+			})
+		}
+	}
+
+	oNext.onclick=function() {
+		arr.push(arr[0]); //把数组第一项添加到最后
+		arr.shift(); //删除数组第一项
+		for (var i=0; i<aLi.length; i++) {
+			aLi[i].style.zIndex=arr[i][4];
+			bufferMove(aLi[i], {
+				left:arr[i][0],
+				top:arr[i][1],
+				width:arr[i][2],
+				height:arr[i][3]
+			});
+			bufferMove(aImg[i], {
+				width:arr[i][5],
+				height:arr[i][6]
+			})
+		}
+	}
+
+}
+</script>
+</head>
+<body>
+<div id="box">
+	<button type="button" id="prev"><</button>
+	<ul id="ul1">
+		<li><img width="200" height="100" src="2-2-1.jpg" alt=""></li>
+		<li><img width="200" height="100" src="2-2-2.jpg" alt=""></li>
+		<li><img width="200" height="100" src="2-2-3.jpg" alt=""></li>
+		<li><img width="400" height="200" src="2-2-4.jpg" alt=""></li>
+		<li><img width="200" height="100" src="2-2-5.jpg" alt=""></li>
+		<li><img width="200" height="100" src="2-2-6.jpg" alt=""></li>
+		<li><img width="200" height="100" src="2-2-7.jpg" alt=""></li>
+	</ul>
+	<button type="button" id="next">></button>
+</div>
+</body>
+</html>

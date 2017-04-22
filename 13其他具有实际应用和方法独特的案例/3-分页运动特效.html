@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title></title>
+<style type="text/css">
+*{ margin: 0; padding: 0;}
+a{ text-decoration: none; margin: 0 5px; color: #333;}
+#ul1{ width: 600px; height: 240px; list-style: none; margin: 50px auto; overflow: hidden; position: relative;}
+#ul1 li{ width: 100px; height: 100px; background: olive; float: left; margin: 10px;}
+#div1{ width: 320px; margin: 40px auto;}
+</style>
+<script src="myJs.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+window.onload=function(){
+    var json={  //这里用一个简单的json模拟后台传输过来的数据
+        "title":["课程1","课程2","课程3","课程4","课程5","课程6","课程7","课程8","课程9","课程10","课程11","课程12","课程13","课程14","课程15","课程16","课程17","课程18","课程19","课程20","课程21","课程22","课程23","课程24","课程25","课程26","课程27","课程28","课程29","课程30","课程31","课程32","课程33","课程34"]
+        }
+
+    var arr=[];
+    var iNow=9;
+
+    page({
+        id:'div1',
+        nowNum:2,
+        //allNum:json.title.length,
+        allNum:Math.ceil(json.title.length/10),
+        callback:function(now,all){
+            var num=now*10<json.title.length ? 10 : json.title.length-(now-1)*10;  //每页显示的个数
+            var oUl=document.getElementById("ul1");
+            var aLi=oUl.getElementsByTagName('li');
+
+            if (oUl.innerHTML=='') {  
+            //首次需要添加li，后续不用添加li，只需更换li里面的内容就可以了
+                for (var i=0; i<num; i++) {
+                    var oLi=document.createElement('li');
+                    oLi.innerHTML=json.title[(now-1)*10+i];  //将json中的数据对应的添加到li中
+                    oUl.appendChild(oLi);
+                }
+
+                for (var i=0; i<aLi.length; i++) {
+                    arr.push( [aLi[i].offsetLeft,aLi[i].offsetTop] );  //将各个li的位置信息存在数组里，以便后续使用
+                }
+
+                for (var i=0; i<aLi.length; i++) {  //将各个li改成绝对定位，并把存储好的位置信息赋给各个li的left和top
+                    aLi[i].style.position='absolute';
+                    aLi[i].style.left=arr[i][0]+'px';
+                    aLi[i].style.top=arr[i][1]+'px';
+                    aLi[i].style.margin=0;
+                 }
+            }else{
+                var timer=setInterval(function(){  //收缩运动,从最后一个li依次往第一个开始收缩运动
+                    startMove1(aLi[iNow],{"left":250,"top":240,"opacity":0});  //这里的运动终点可以根据具体需求而定
+                        if (iNow==0) {  //第一个收缩完成后清除定时器
+                            clearInterval(timer);  
+                            iNow=num-1;  //将最后一个赋值给iNow，因为后续展开运动还是从最后一个开始
+                            for (var i=0; i<num; i++) {  //更换每个li里面的内容
+                                aLi[i].innerHTML=json.title[(now-1)*10+i];
+                            }
+                            var timer2=setInterval(function(){  //开始展开运动
+                                startMove1(aLi[iNow],{"left":arr[iNow][0],"top":arr[iNow][1],"opacity":100});  
+                                if (iNow==0) {  //第一个展开结束后清除定时器
+                                    clearInterval(timer2);
+                                    iNow=num-1;  //将最后一个赋值给iNow，以便下一次展开收缩运动
+                                }else{
+                                    iNow--;
+                                }
+                            },20)
+                        }else{
+                            iNow--;
+                        }
+                    },50)
+            }
+        }
+
+    })
+}
+
+            function page(opt){
+
+                if (!opt.id) {
+                    return false;
+                }
+
+                var obj=document.getElementById(opt.id);
+                var nowNum=opt.nowNum || 1;
+                var allNum=opt.allNum || 5;
+
+                //看回调函数是否存在，如果存在就直接赋值，不存在则默认空
+                var callback=opt.callback || function(){};
+
+                //首页
+                if (nowNum>=4 && allNum>=6) {
+                    var oA=document.createElement('a');
+                    oA.href='#1';
+                    oA.innerHTML='首页';
+                    obj.appendChild(oA);
+                }
+
+                //上一页
+                if (nowNum>=2) {
+                    var oA=document.createElement('a');
+                    oA.href='#'+(nowNum-1);
+                    oA.innerHTML='上一页';
+                    obj.appendChild(oA);
+                }
+
+                //5个页码
+                if (allNum<=5) {
+
+                    for (var i=1; i<=allNum; i++) {
+                        var oA=document.createElement('a');
+                        oA.href='#'+i;
+                        if (nowNum==i) {
+                            oA.innerHTML=i;
+                        }else{
+                            oA.innerHTML='['+ i +']';
+                        }
+
+                        obj.appendChild(oA);
+                    }
+
+                }else{
+                    //设置5页以上的翻页
+            for(var i=1; i<=5; i++) {
+                var oA=document.createElement("a");
+
+                if (nowNum==1 || nowNum==2) {
+                    oA.href="#"+i;
+                    if (nowNum==i) {
+                        oA.innerHTML=i;
+                    } else {
+                        oA.innerHTML="["+i+"]";
+                    }
+                } else if ( (allNum-nowNum)==0 || (allNum-nowNum)==1 ) {
+                    oA.href="#"+(allNum-5+i);
+                    if ( (allNum-nowNum)==0 && i==5 ) {
+                        oA.innerHTML=(allNum-5+i);
+                    } else if ( (allNum-nowNum)==1 && i==4 ) {
+                        oA.innerHTML=(allNum-5+i);
+
+                    } else {
+                        oA.innerHTML="["+(allNum-5+i)+"]";
+                    }
+                } else {
+                    oA.href="#"+(nowNum-3+i);
+                    if (i==3) {
+                        oA.innerHTML=(nowNum-3+i);
+                    } else {
+                        oA.innerHTML="["+(nowNum-3+i)+"]";
+                    }
+                }
+                obj.appendChild(oA);
+            }
+                }
+
+                //下一页
+                if ((allNum-nowNum)>=1) {
+                    var oA=document.createElement('a');
+                    oA.href='#'+(nowNum+1);
+                    oA.innerHTML='下一页';
+                    obj.appendChild(oA);
+                }
+
+                //尾页
+                if ((allNum-nowNum)>=3 && allNum>=6) {
+                    var oA=document.createElement('a');
+                    oA.href='#'+allNum;
+                    oA.innerHTML='尾页';
+                    obj.appendChild(oA);
+                }
+
+                //总共页码
+                var oSpan=document.createElement('span');
+                oSpan.innerHTML='总共 '+ allNum +' 页';
+                obj.appendChild(oSpan);
+
+                //执行回调函数
+                callback(nowNum,allNum);
+
+                //点击切换
+                var aA=obj.getElementsByTagName('a');
+                for (var i=0; i<aA.length; i++) {
+                    aA[i].onclick=function(){
+                        var nowNum=parseInt(this.getAttribute('href').substring(1));
+                        obj.innerHTML='';
+
+                        page({
+                            id:opt.id,
+                            nowNum:nowNum,
+                            allNum:allNum,
+                            callback:callback
+                        })
+
+                        return false;
+
+                    }
+                }
+
+            }
+        </script>
+    </head>
+    <body>
+        <ul id="ul1"></ul>
+        <div id="div1"></div>
+    </body>
+</html>

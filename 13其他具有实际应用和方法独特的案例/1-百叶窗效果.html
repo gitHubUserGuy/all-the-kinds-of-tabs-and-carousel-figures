@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+<style>
+* {margin:0; padding:0;}
+li {list-style: none;}
+#ul1 {width:300px; height:auto; border-top:1px solid purple;}
+#ul1 li {width:100%; height:20px; border-bottom:1px dashed purple; overflow: hidden; margin:10px; position: relative;}
+#ul1 li div {width:100%; height:40px; line-height: 20px; position: absolute; top:-20px;}
+</style>
+<script>
+	function getStyle(obj, attr) {
+		return obj.currentStyle? obj.currentStyle[attr]: getComputedStyle(obj)[attr];
+	}
+	function startMove(obj, json, fn ) {
+		clearInterval(obj.timer);
+		obj.timer=setInterval(function() {
+
+			for ( var attr in json) {
+				var iCur=0;
+				if (attr==="opacity") {
+					iCur=parseInt( parseFloat(getStyle(obj, attr))*100 );
+				} else {
+					iCur=parseInt( getStyle(obj, attr) );
+				}
+
+				var iSpeed= iCur<=json[attr]? 2:-2;
+				//此例中，不能将iSpeed作为函数的参数。为什么？
+
+				if (iCur===json[attr]) {
+					clearInterval(obj.timer);
+					fn && fn();
+				} else {
+					if (attr==="opacity") {
+						obj.style.opacity=(iCur+iSpeed)/100;
+						obj.style.filter="alpha(opacity="+(iCur+iSpeed)+")";
+					} else {
+						obj.style[attr]=(iCur+iSpeed)+"px";
+					}
+				}
+			}
+		}, 20)
+	}
+
+window.onload=function() {
+	var oUl=document.getElementById("ul1");
+	var aDiv=oUl.getElementsByTagName("div");
+	var iTimer=null;
+	var iNow=0;
+	var b=true;
+
+	setInterval(function() {
+		toShow();
+	}, 1000)
+
+	function toShow() {
+		iTimer=setInterval(function() {
+			if (iNow===aDiv.length) {
+				clearInterval(iTimer);
+				iNow=0;
+				b=!b;
+			} else {
+				startMove(aDiv[iNow],  {top:b?0:-20});
+				iNow++;
+			}
+		},50)
+	}
+
+}
+</script>
+</head>
+<body>
+<ul id="ul1">
+	<li>
+		<div>
+			<p>难道非要爱到密不可分</p>
+			<p>关不住心门那啥</p>
+		</div>
+	</li>
+	<li>
+		<div>
+			<p>有多么的难受有多么的残忍</p>
+			<p>为什么总让我一个人痴痴等</p>
+		</div>
+	</li>
+	<li>
+		<div>
+			<p>你偷走的青春</p>
+			<p>是真的伤人我真的痛了</p>
+		</div>
+	</li>
+	<li>
+		<div>
+			<p>别说我的眼泪你无所谓</p>
+			<p>我才能明白爱是如此的动人</p>
+		</div>
+	</li>
+	<li>
+		<div>
+			<p>对爱我还是一样的坚贞</p>
+			<p>你说过我那啥倾国倾城</p>
+		</div>
+	</li>
+</ul>
+</body>
+</html>

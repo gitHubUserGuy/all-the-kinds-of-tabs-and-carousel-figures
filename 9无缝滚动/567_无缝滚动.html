@@ -1,0 +1,62 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<title>Document</title>
+<style>
+* {margin:0; padding:0; list-style:none;}
+a {text-decoration:none; color:purple; font-size:24px;}
+#box {width:480px; height:120px; position:relative; border:1px solid purple; overflow:hidden; margin:40px; }
+#ul1 {height:100px; position:absolute; left:0; }
+#ul1 li {width:100px; height:100px; float:left; padding:10px;}
+#ul1 li img {width:100px; height:100px; vertical-align:top; border:none;}
+</style>
+<script type="text/javascript">
+window.onload=function() {
+	var leftA=document.getElementById("Left");
+	var rightA=document.getElementById("Right");
+	var oUl=document.getElementById("ul1");
+	var aLi=document.getElementsByTagName("li");
+	var speed=-10;
+
+	oUl.innerHTML+=oUl.innerHTML;
+	oUl.style.width=aLi.length* aLi[0].offsetWidth + "px";
+
+	//roll(oUl)
+	function roll(obj) {
+		clearInterval(obj.timer);
+		obj.timer=setInterval(function() {
+			obj.style.left=obj.offsetLeft+speed+"px";
+			
+			if (obj.offsetLeft<-obj.offsetWidth/2) {
+				obj.style.left="0px";
+			} else if (obj.offsetLeft>0) {
+				obj.style.left=-obj.offsetWidth/2 + "px";
+			}
+		} ,50)
+	}
+
+	leftA.onclick=function() {
+		speed=-10;
+		roll(oUl)
+	}
+	rightA.onclick=function() {
+		speed=10;
+		roll(oUl)
+	}
+}
+</script>
+</head>
+<body>
+	<a href="javascript:;" id="Left">向左</a>
+	<a href="javascript:;" id="Right">向右</a>
+	<div id="box">
+		<ul id="ul1">
+			<li><img src="img/1.jpg"</li>
+			<li><img src="img/2.jpg"</li>
+			<li><img src="img/3.jpg"</li>
+			<li><img src="img/4.jpg"</li>
+		</ul>
+	</div>
+</body>
+</html>

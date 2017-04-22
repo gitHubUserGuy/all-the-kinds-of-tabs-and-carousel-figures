@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+<script>
+window.onload=function() {
+	//select标签数量
+	var selNum=3;
+
+	//第一级select的option
+	var optArr1=["选项1","选项2","选项3"];
+	//第二级select的option
+	var optArr2=[
+		["选项1-1","选项1-2","选项1-3"],
+		["选项2-1","选项2-2","选项2-3"],
+		["选项3-1","选项3-2","选项3-3"]
+	];
+	//第三级select的option
+	var optArr3=[
+		[
+			["选项1-1-1","选项1-1-2","选项1-1-3"],
+			["选项1-2-1","选项1-2-2","选项1-2-3"],
+			["选项1-3-1","选项1-3-2","选项1-3-3"]
+		],
+		[
+			["选项2-1-1","选项2-1-2","选项2-1-3"],
+			["选项2-2-1","选项2-2-2","选项2-2-3"],
+			["选项2-3-1","选项2-3-2","选项2-3-3"]
+		],
+		[
+			["选项3-1-1","选项3-1-2","选项3-1-3"],
+			["选项3-2-1","选项3-2-2","选项3-2-3"],
+			["选项3-3-1","选项3-3-2","选项3-3-3"]
+		]
+	];
+
+	//为每个select添加"默认"第一项
+	for (var i=0; i<selNum; i++ ) {
+		var oSel=document.createElement("select");
+		for (var j=0; j<1; j++) {
+			var opt=document.createElement("option");
+			opt.innerHTML="默认";
+			oSel.appendChild(opt); 
+		}
+		document.body.appendChild(oSel);
+	}
+	//为第一个select添加备选项
+	var aSel=document.getElementsByTagName("select");
+	for (var i=0; i<optArr1.length; i++) {
+		var opt=document.createElement("option");
+		opt.innerHTML=optArr1[i];
+		aSel[0].appendChild(opt);
+	}
+	//点击第一个select下的option生成第二个select下的option
+	//思路：点击第一层select的任何一个option就清空第二个和第三个select下的所有option并为它们添加"默认"第一项；对于第一层select如果不是点击默认option，那么就把其索引值减1以对应以上数组没有"默认"这一项内容的位置以备动态创建并添加至第二层select下(虽然第一层以及第二层的option数组中索引值是从0开始，但是被添加进select之后由于第一项是默认，那么其索引值多1个，为了与数组位置对应则需要减去1)。保存第一层select下option索引值是由于第三层select的option有三层，点击第二层select下的option时必须知道第一层option的索引值才能找到第二层select的各个option下对应的3个第三层select下的option。
+	var opt1=aSel[0].getElementsByTagName("option");
+	var arr=[];
+	for (var i=0; i<opt1.length; i++) {
+		opt1[i].index=i;
+		opt1[i].onclick=function() {
+
+			aSel[1].innerHTML="";
+			var opt2=document.createElement("option");
+			opt2.innerHTML="默认";
+			aSel[1].appendChild(opt2);
+
+			aSel[2].innerHTML="";
+			var opt3=document.createElement("option");
+			opt3.innerHTML="默认";
+			aSel[2].appendChild(opt3);
+
+			if (this.index!=0) {
+				arr=[];
+				arr.push(this.index-1);
+
+				for (var j=0; j<optArr2[this.index-1].length; j++) {
+					var opt2=document.createElement("option");
+					opt2.innerHTML=optArr2[this.index-1][j];
+					aSel[1].appendChild(opt2);
+				}
+
+				var opt2=aSel[1].getElementsByTagName("option");
+				for (var i=0; i<opt2.length; i++) {
+					opt2[i].index1=i;
+					opt2[i].onclick=function() {
+
+						aSel[2].innerHTML="";
+						var opt3=document.createElement("option");
+						opt3.innerHTML="默认";
+						aSel[2].appendChild(opt3);
+
+						if (this.index1!=0) {
+							for (var j=0; j<optArr3[arr[0]][this.index1-1].length; j++) {
+								var opt3=document.createElement("option");
+								opt3.innerHTML=optArr3[arr[0]][this.index1-1][j];
+								aSel[2].appendChild(opt3);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+}
+</script>
+</head>
+<body>
+	<!-- <select name="" id="">
+		<option value="" selected>默认</option>
+		<option value="">选项1</option>
+		<option value="">选项2</option>
+		<option value="">选项3</option>
+	</select>
+	<select name="" id="">
+		<option value="" selected>默认</option>
+		<option value="">选项1</option>
+		<option value="">选项2</option>
+		<option value="">选项3</option>
+	</select>
+	<select name="" id="">
+		<option value="" selected>默认</option>
+		<option value="">选项1</option>
+		<option value="">选项2</option>
+		<option value="">选项3</option>
+	</select> -->
+</body>
+</html>

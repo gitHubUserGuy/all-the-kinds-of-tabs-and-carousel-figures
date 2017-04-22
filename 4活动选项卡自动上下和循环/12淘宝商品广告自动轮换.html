@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>无标题文档</title>
+<style>
+ul, li {margin:0; padding:0; list-style:none;}
+#box {position:relative; width:506px; height:300px; border:1px solid purple; }
+#box #Left {position:absolute; left:0; top:0; }
+#box #Right {position:absolute; right:0; top:0; }
+li {width:100px; height:98px; border:1px solid purple; line-height:98px; text-align:center; }
+#box div {width:300px; height:298px; border:1px solid purple; margin-left:102px; }
+#box div img {width:300px; height:298px; vertical-align:top; border:none; }
+.active {background:orange; color:#FFF; font-weight:bold; }
+</style>
+<script>
+window.onload= function() {
+	var aLi= document.getElementsByTagName("li");
+	var oImg= document.getElementsByTagName("img")[0];
+	var picArr=["1点.png","2点.png","3点.png","6点.png","5点.png","4点.png"];
+	var timer=null;
+	var num=0;
+	
+	autoplay();
+	
+	for (var i=0; i<aLi.length; i++) {
+		aLi[i].index= i;
+		aLi[i].onmouseover= function() {
+			clearInterval(timer);
+			clear();
+			this.className="active";
+			oImg.src= picArr[this.index];      
+		}
+		aLi[i].onmouseout= function() {
+			this.className="";
+			autoplay(); 
+		}
+	}
+	
+	oImg.onmouseover=function() {
+		clearInterval(timer);
+	}
+	oImg.onmouseout=function() {
+		autoplay();
+	}
+	
+	function clear() {
+		for (var i=0; i<aLi.length; i++) {
+			aLi[i].className=""; 
+		}
+	}
+	
+	function autoplay() {
+		timer=setInterval(function() {
+			clear();
+			aLi[num].className="active";
+			oImg.src= picArr[num];
+			if (num<aLi.length/2) {
+				num++;
+				if (num===aLi.length/2) {
+					num= aLi.length-1;
+				}
+			} else {
+				num--;
+				if (num===aLi.length/2 -1) {
+					num=0;
+				}
+			}
+		}, 500);
+	}
+}
+</script>
+</head>
+
+<body>
+<div id="box">
+	<ul id="Left">
+		<li>1</li>
+		<li>2</li>
+		<li>3</li>
+	</ul>
+	<div>
+		<img src="1点.png" alt="糟糕，图片无法显示！" />
+	</div>
+	<ul id="Right">
+		<li>6</li>
+		<li>5</li>
+		<li>4</li>
+	</ul>
+</div>
+</body>
+</html>

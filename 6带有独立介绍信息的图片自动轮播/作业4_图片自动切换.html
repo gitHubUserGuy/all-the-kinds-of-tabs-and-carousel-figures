@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>无标题文档</title>
+<style>
+ul, li, p, body {margin:0; padding:0; list-style:none; }
+div {width:200px; height:200px; border:3px solid purple; overflow:hidden; margin:100px; position:relative; }
+img {vertical-align:top; border:none; width:200px; height:200px;}
+ul {display:table; width:1200px; height:200px; position:absolute; }
+li {display:table-cell; width:200px; height:200px; }
+p {width:200px; height:50px; position:absolute; background-color:black; color:white; line-height:50px; text-align:center; opacity:0.6; filter:alpha(opacity=60); top:200px;}
+</style>
+<script>
+function getStyle(obj, attr) {
+		return obj.currentStyle? obj.currentStyle[attr]: getComputedStyle(obj)[attr];
+} 
+	
+function slide(obj, attr, aim, num, endFn) {
+	num= parseInt(getStyle(obj, attr))<aim? num: -num;
+	clearInterval(obj.timer);
+	obj.timer=setInterval( function() {
+		var pos= parseInt(getStyle(obj, attr));
+		var newLeft= pos + num;
+			if (newLeft<aim && num<0 || newLeft>aim && num>0) {
+				newLeft=aim
+			}
+			obj.style[attr]= newLeft + "px";
+				if (newLeft===aim) {
+					clearInterval(obj.timer );
+					endFn && endFn();
+				}
+	}, 20);
+}
+window.onload=function() {
+	var oP= document.getElementsByTagName("p");
+	var oUl= document.getElementsByTagName("ul")[0];
+	var aLi= oUl.getElementsByTagName("li");
+	var timer1=null;
+	var num=0;
+	
+	/*slide(oP[0], "top", 150, 5, function(){
+		setTimeout(function(){
+			slide(oP[num], "top", 200, 5);
+		}, 2000)
+	});*/
+	
+	autoslide();
+	function autoslide() {
+		timer1=setInterval( function() {
+			slide(oUl, "left", -200*num, 5, function() {
+				slide(oP[num], "top", 150, 5, function() {
+					setTimeout(function() {
+						slide(oP[num], "top", 200, 5);
+						if (num===aLi.length-1) {
+							oUl.style.left= 0;
+							num=0;
+						} 
+					}, 2000)
+				});
+			})
+			num++;
+		}, 4000);
+		//时间的讲究！oP一上一下循环一次的时间等于oUl执行一次的时间
+				//同时，当一个父级移动时，可以根据其子级数量来衡量父级每次移动的单位
+	}
+	
+}
+</script>
+</head>
+
+<body>
+<div>
+	<ul>
+		<li><img src="img/1.jpg" /></li>
+		<li><img src="img/2.jpg" /></li>
+		<li><img src="img/3.jpg" /></li>
+		<li><img src="img/4.jpg" /></li>
+		<li><img src="img/5.jpg" /></li>
+		<li><img src="img/1.jpg" /></li>
+	</ul>
+	<p>是我</p>
+	<p>是我</p>
+	<p>是我</p>
+	<p>是我</p>
+	<p>是我</p>
+	<p>是我</p>
+</div>
+</body>
+</html>
